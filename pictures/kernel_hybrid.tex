@@ -1,0 +1,108 @@
+%%
+%%
+%% kernel_monolithic.tex for  in /doctorat/ece/partenariat/cours/archi_kernel
+%%
+%% Made by Philippe THIERRY
+%% Login   <Philippe THIERRYreseau-libre.net>
+%%
+%% Started on  Thu Sep 23 14:19:58 2010 Philippe THIERRY
+%% Last update Thu Sep 23 16:50:25 2010 Philippe THIERRY
+%%
+
+\begin{pdfpic}
+\scalebox{1}{
+\begin{pspicture}(0,0)(13,8)
+% first line seems not to be considered by pstricks... strange...
+\psline{-}(0,0)(0,0)
+% kernel block
+\definecolor{Service}{rgb}{0.81,0.73,0.20}
+\definecolor{KernLow}{rgb}{0,0,0.6}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Service](1,3)(11.5,1.5)
+\psframe[linewidth=0.04cm,linestyle=dashed,fillstyle=solid,fillcolor=KernLow](1,1.6)(11.5,0)
+\definecolor{UserBase}{rgb}{0.7,0.7,0.7}
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=UserBase](1,3)(11.5,7.5)
+%----- base kernel modules
+\definecolor{KernModule}{rgb}{0,0,0.4}
+\definecolor{KernShadow}{rgb}{0,0,0.1}
+% memory module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=KernShadow,framearc=.3](1.6,0.4)(3.6,1.4) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=KernModule,framearc=.3](1.5,0.5)(3.5,1.5)
+\rput(2.5,1){\text \color{white}{memory}}
+% IRQ module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=KernShadow,framearc=.3](4.1,0.4)(6.1,1.4) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=KernModule,framearc=.3](4,0.5)(6,1.5)
+\rput(5,1){\text \color{white}{interrupt}}
+% sched module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=KernShadow,framearc=.3](6.6,0.4)(8.6,1.4) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=KernModule,framearc=.3](6.5,0.5)(8.5,1.5)
+\rput(7.5,1){\text \color{white}{scheduler}}
+% CPU module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=KernShadow,framearc=.3](9.1,0.4)(11.1,1.4) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=KernModule,framearc=.3](9,0.5)(11,1.5)
+\rput(10,1){\text \color{white}{processor}}
+%----- high kernel modules
+\definecolor{ServiceModule}{rgb}{0.405,0.365,0.10}
+\definecolor{ServiceShadow}{rgb}{0.202,0.18,0.05}
+% driver modules
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=ServiceShadow,framearc=.3](1.6,1.7)(3.6,2.7) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=ServiceModule,framearc=.3](1.5,1.8)(3.5,2.8)
+\rput(2.5,2.3){\text \color{white}{drivers}}
+% network module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=ServiceShadow,framearc=.3](4.1,1.7)(6.1,2.7) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=ServiceModule,framearc=.3](4,1.8)(6,2.8)
+\rput(5,2.3){\text \color{white}{network}}
+% fs module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=ServiceShadow,framearc=.3](6.6,1.7)(8.6,2.7) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=ServiceModule,framearc=.3](6.5,1.8)(8.5,2.8)
+\rput(7.5,2.3){\text \color{white}{filesystem}}
+% syscall, IPC module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=ServiceShadow,framearc=.3](9.1,1.7)(11.1,2.7) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=ServiceModule,framearc=.3](9,1.8)(11,2.8)
+\rput(10,2.3){\text \color{white}{syscalls}}
+% US/KS separation line
+\psline[linewidth=0.05cm,linestyle=dashed]{-}(0.5,1.6)(12,1.6)
+\rput{90}(12,0.75){\text {\small kernelspace}}
+%--- library
+\definecolor{Library}{rgb}{0,0.3,0}
+\definecolor{LibraryShadow}{rgb}{0,0.1,0}
+% lib 1
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=LibraryShadow,framearc=.3](1.3,3.1)(4.3,3.9)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Library,framearc=.3](1.2,3.2)(4.2,4)
+\rput(2.7,3.6){\text \color{white}{Library}}
+% lib 2
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=LibraryShadow,framearc=.3](4.6,3.1)(7.6,3.9)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Library,framearc=.3](4.5,3.2)(7.5,4)
+\rput(6.1,3.6){\text \color{white}{Library}}
+% lib 3
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=LibraryShadow,framearc=.3](7.9,3.1)(10.9,3.9)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Library,framearc=.3](7.8,3.2)(10.8,4)
+\rput(9.4,3.6){\text \color{white}{Library}}
+%--- tasks
+\definecolor{Task}{rgb}{0.3,0,0}
+\definecolor{TaskShadow}{rgb}{0.1,0,0}
+% first task
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=TaskShadow,framearc=.3](1.6,4.1)(3.1,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task,framearc=.3](1.5,4.2)(3,7.2)
+\rput{60}(2.25,5.7){\text \color{white}{first task}}
+% second task
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=TaskShadow,framearc=.3](3.6,4.1)(5.1,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task,framearc=.3](3.5,4.2)(5,7.2)
+\rput{60}(4.25,5.7){\text \color{white}{second task}}
+% etc line
+\psline[linewidth=0.04cm,linestyle=dotted](5.4,5.7)(6.6,5.7)
+% third task
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=TaskShadow,framearc=.3](7.1,4.1)(8.6,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task,framearc=.3](7,4.2)(8.5,7.2)
+\rput{60}(7.75,5.7){\text \color{white}{{\it N-1}\textsuperscript{th} task}}
+% fourth task
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=TaskShadow,framearc=.3](9.1,4.1)(10.6,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task,framearc=.3](9,4.2)(10.5,7.2)
+\rput{60}(9.75,5.7){\text \color{white}{{\it N}\textsuperscript{th} task}}
+\rput{90}(12,5.25){\text userspace}
+\rput{90}(0.6,0.75){\text base}
+% service/userspace line
+\psline[linewidth=0.05cm,linestyle=dashed]{-}(0.5,3)(12,3)
+\rput{90}(0.6,2.25){\text services}
+\end{pspicture}
+}
+\end{pdfpic}
