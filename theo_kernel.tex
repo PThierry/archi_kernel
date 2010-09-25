@@ -1,0 +1,89 @@
+%%
+%%
+%% theo_kernel.tex for  in /doctorat/ece/partenariat/cours/archi_kernel
+%%
+%% Made by Philippe THIERRY
+%% Login   <Philippe THIERRYreseau-libre.net>
+%%
+%% Started on  Wed Sep 22 14:45:23 2010 Philippe THIERRY
+%% Last update Fri Sep 24 16:10:04 2010 Philippe THIERRY
+%%
+
+\chapter{Un petit historique du noyau}
+
+\section{Des premiers noyaux aux exokernels}
+
+\subsection{L'invention du noyau}
+
+\subsection{Les noyaux monolithiques}
+
+\paragraph{}
+Historiquement le plus ancien, le noyau monolithique est la conséquence des ajouts incessants de
+nouvelles fonctionnalités dans les noyaux au fur et à mesure de l'intégration de nouvelle
+technologies.\\
+En effet, les premiers noyaux ne possédaient pas de pile réseau et avait un nombre très faible de
+drivers. Avec la création du réseau d'une part et l'hétérogénéisation du matériel d'autre part,
+beaucoup de code fut ajouté aux noyaux.
+
+\begin{figure}[ht]
+\input{pictures/kernel_monolithic.tex}
+\label{pic:kern_monolithic}
+\caption{Répartition des services dans un noyau monolithique}
+\end{figure}
+
+\subsection{Les noyaux hybrides}
+
+\paragraph{}
+Exemple de GNU Hurd, noyau hybride écrit en C++, déportant une partie de ses modules dans un
+domaine d'exécution dit de {\it service}, hors de l'espace d'adressage du noyau. Un plantage dans
+cette zone de service ne provoque pas de plantage du noyau, du fait de cette séparation.
+
+\begin{figure}[ht]
+\input{pictures/kernel_hybrid.tex}
+\label{pic:kern_hybrid}
+\caption{Répartition des services dans un noyau hybride}
+\end{figure}
+
+
+\subsection{Les micro-noyaux}
+
+\subsection{Les exo-noyaux}
+
+\chapter{Les noyaux UNIX}
+
+\section{Introduction}
+Afin de fournir aux applicatifs une interface normalisée leur permettant de s'abstraire des spécificités
+du matériel mais également des différents noyaux existant, une norme fut créée au début des années 70 :
+la norme POSIX.\\
+Le but est que l'ensemble des noyaux existant soit compatible de cette norme, ceci afin de rendre
+les applicatifs portable d'un noyau à un autre. Ce fut le cas de tous les noyaux monolithiques (hors
+recherche)... jusqu'à l'arrivée de MS-DOS).
+
+\paragraph{}
+Arbre généalogique de la famille UNIX
+\begin{figure}[ht]
+\input{pictures/unix_history.tex}
+\label{fig:unix_genealogy}
+\caption{Petit historique des UNIX libres (image Wikipedia)}
+\end{figure}
+
+\section{Le langage C et la création d'UNIX}
+
+\section{POSIX et la portabilité}
+
+\chapter{Un petit passage par Windows}
+
+\section{Microsoft DOS}
+
+\paragraph{}
+Anecdote sur IBM cherchant un fournisseur d'OS pour son nouveau produit : le PC
+
+\paragraph{}
+Le premier noyau de Microsoft, basé sur DOS
+
+\section{Les noyaux NT}
+
+\section{Vista et 7}
+
+\paragraph{}
+Une architecture de type micro-noyau
