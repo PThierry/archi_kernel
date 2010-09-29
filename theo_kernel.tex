@@ -6,16 +6,14 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Wed Sep 22 14:45:23 2010 Philippe THIERRY
-%% Last update Fri Sep 24 16:10:04 2010 Philippe THIERRY
+%% Last update Wed Sep 29 16:14:28 2010 Philippe THIERRY
 %%
 
 \chapter{Un petit historique du noyau}
 
-\section{Des premiers noyaux aux exokernels}
+\section{L'invention du noyau}
 
-\subsection{L'invention du noyau}
-
-\subsection{Les noyaux monolithiques}
+\section{Les noyaux monolithiques}
 
 \paragraph{}
 Historiquement le plus ancien, le noyau monolithique est la conséquence des ajouts incessants de
@@ -31,7 +29,7 @@ beaucoup de code fut ajouté aux noyaux.
 \caption{Répartition des services dans un noyau monolithique}
 \end{figure}
 
-\subsection{Les noyaux hybrides}
+\section{Les noyaux hybrides}
 
 \paragraph{}
 Exemple de GNU Hurd, noyau hybride écrit en C++, déportant une partie de ses modules dans un
@@ -45,9 +43,62 @@ cette zone de service ne provoque pas de plantage du noyau, du fait de cette sép
 \end{figure}
 
 
-\subsection{Les micro-noyaux}
+\section{Les micro-noyaux}
+
+\begin{figure}[ht]
+\input{pictures/kernel_micro.tex}
+\label{pic:kern_micro}
+\caption{Les architectures à base de micro-noyaux}
+\end{figure}
+
+
+\section{Les noyaux d'aujourd'hui}
 
 \subsection{Les exo-noyaux}
+
+\paragraph{}
+Il existe aujourd'hui des éléments d'architectures de type exo-noyaux. Il s'agit de noyau plus
+petits encore que les micro-noyaux décrits au dessus. Le but est de fournir uniquement une couche
+d'abstraction du matériel sans fournir d'éléments avancés tels qu'un ordonnanceur au niveau noyau.
+
+\paragraph{}
+Les exo-noyaux sont destinés à des architectures logicielles peu fréquentes (FIXME continuer)
+
+\subsection{Les hyperviseurs}
+
+\paragraph{}
+Bien que le principe de virtualisation date de 1973, son véritable essor date du début des années
+2000, pour des raisons diverses :
+\begin{itemize}
+\item La puissance des machines, suffisante pour fournir plusieurs services simultanément 
+\item La réduction du coût du matériel et de la consommation électrique
+\item Un besoin de redondance logicielle, simple à gérer via la virtualisation
+\item La possibilité de maquéter rapidement et efficacement des architectures réseaux complexes
+\item Plus récemment un besoin de sécurité au travers du cloisonnement par la virtualisation. Ce
+dernier élément est moins connu du grand public et s'appuie sur des solutions autres que les
+célèbres VMWare et VirtualBox.
+\end{itemize}
+
+\paragraph{}
+Parmis les différentes solutions de virtualisation, il existe les hyperviseurs, solutions basées
+sur un noyau plus ou moins gros, dont l'accès n'est jamais direct. On passe alors par des consoles
+de gestion (cas de certains hyperviseurs professionnels) ou des domaines virtuels dits "privilégiés"
+(cas de Xen). Ces hyperviseurs fournissent des services de type paravirtualisation ou de type HVM
+(Hardware-based Virtual-machine Monitor, s'appuyant sur des composant matériels tels que Intel VT
+ou ARM TrustZone).
+
+\begin{figure}[ht]
+\input{pictures/kernel_hypervisor.tex}
+\label{pic:kern_micro}
+\caption{Les architectures logiciels des hyperviseurs}
+\end{figure}
+
+\paragraph{}
+Les hyperviseurs permettent de supporter des machines virtuelles avec un choix plus ou moins riche
+et un cloisonnement plus ou moins fort\footnote{Pour ceux que ça intéresse, il est intéressant
+d'étudier le principe des système MILS
+(\url{http://en.wikipedia.org/wiki/Multiple\_Independent\_Levels\_of\_Security}) en comparaison aux
+solutions existantes de RTOS (Real-Time Operating Systems)}.
 
 \chapter{Les noyaux UNIX}
 
@@ -70,6 +121,9 @@ Arbre généalogique de la famille UNIX
 \section{Le langage C et la création d'UNIX}
 
 \section{POSIX et la portabilité}
+
+\section{La (grande) famille BSD}
+
 
 \chapter{Un petit passage par Windows}
 

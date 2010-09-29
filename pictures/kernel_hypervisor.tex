@@ -1,0 +1,116 @@
+%%
+%%
+%% kernel_monolithic.tex for  in /doctorat/ece/partenariat/cours/archi_kernel
+%%
+%% Made by Philippe THIERRY
+%% Login   <Philippe THIERRYreseau-libre.net>
+%%
+%% Started on  Thu Sep 23 14:19:58 2010 Philippe THIERRY
+%% Last update Wed Sep 29 15:25:02 2010 Philippe THIERRY
+%%
+
+\begin{pdfpic}
+\scalebox{0.8}{
+\begin{pspicture}(0,0)(15,8)
+% first line seems not to be considered by pstricks... strange...
+\psline{-}(0,0)(0,0)
+% kernel block
+\definecolor{KernLow}{rgb}{0,0,0.6}
+\psframe[linewidth=0.04cm,linestyle=dashed,fillstyle=solid,fillcolor=KernLow](1,1.8)(14,0)
+\definecolor{UserBase}{rgb}{0.7,0.7,0.7}
+% background of userspace content
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=UserBase](1,1.8)(14,7.5)
+%----- base kernel modules
+\definecolor{KernModule}{rgb}{0,0,0.4}
+\definecolor{KernShadow}{rgb}{0,0,0.1}
+% memory module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=KernShadow,framearc=.3](1.6,0.4)(3.6,1.4) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=KernModule,framearc=.3](1.5,0.5)(3.5,1.5)
+\rput(2.5,1){\text \color{white}{memory}}
+% IRQ module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=KernShadow,framearc=.3](4.1,0.4)(6.1,1.4) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=KernModule,framearc=.3](4,0.5)(6,1.5)
+\rput(5,1){\text \color{white}{interrupt}}
+% sched module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=KernShadow,framearc=.3](6.6,0.4)(8.6,1.4) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=KernModule,framearc=.3](6.5,0.5)(8.5,1.5)
+\rput(7.5,1){\text \color{white}{scheduler}}
+% CPU module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=KernShadow,framearc=.3](9.1,0.4)(11.1,1.4) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=KernModule,framearc=.3](9,0.5)(11,1.5)
+\rput(10,1){\text \color{white}{processor}}
+% IPC module
+\psframe[linewidth=0.00cm,fillstyle=solid,fillcolor=KernShadow,framearc=.3](11.6,0.4)(13.6,1.4) % shadow
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=KernModule,framearc=.3](11.5,0.5)(13.5,1.5)
+\rput(12.5,1){\text \color{white}{IPC}}
+% service/userspace line
+\psline[linewidth=0.05cm,linestyle=dashed]{-}(0.5,1.8)(15,1.8)
+% Native hypervision interface
+\definecolor{Library}{rgb}{0,0.3,0}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Library,framearc=.3](1,1.8)(14,2.5)
+\rput(7.5,2.1){\text native hypervision interface}
+%--- tasks
+\definecolor{LibraryShadow}{rgb}{0,0.1,0}
+\definecolor{Task}{rgb}{0.3,0,0}
+\definecolor{TaskShadow}{rgb}{0.1,0,0}
+% first task
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=TaskShadow,framearc=.3](1.6,2.7)(3.1,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task,framearc=.3](1.5,2.8)(3,7.2)
+\rput{60}(2.25,5){\text \color{white}{first native task}}
+% second task
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=TaskShadow,framearc=.3](3.6,2.7)(5.1,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task,framearc=.3](3.5,2.8)(5,7.2)
+\rput{60}(4.25,5){\text \color{white}{second native task}}
+
+% OS
+\definecolor{OSColor}{rgb}{0.2,0.2,0.2}
+\definecolor{OSColorShadow}{rgb}{0.1,0.1,0.1}
+% guest OS bg
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=OSColorShadow,framearc=0.3](5.6,2.7)(7.1,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=OSColor,framearc=0.3](5.5,2.8)(7,7.2)
+% guest OS virtualized kernel
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=KernLow,linecolor=black,framearc=.3](5.5,2.8)(7,4)
+\rput(6.25,3.3){\text \color{white}{kernel}}
+% guest OS lib
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Library,framearc=.3](5.5,4.1)(7,5.1)
+\rput(6.25,4.5){\text \color{white}{library}}
+% guest OS tasks
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task](5.6,5.1)(5.9,7)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task](6,5.1)(6.3,7)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task](6.4,5.1)(6.7,7)
+
+% OS
+\definecolor{OSColor}{rgb}{0.2,0.2,0.2}
+\definecolor{OSColorShadow}{rgb}{0.1,0.1,0.1}
+% guest OS bg
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=OSColorShadow,framearc=0.3](7.6,2.7)(9.1,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=OSColor,framearc=0.3](7.5,2.8)(9,7.2)
+% guest OS virtualized kernel
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=KernLow,linecolor=black,framearc=.3](7.5,2.8)(9,4)
+\rput(8.25,3.3){\text \color{white}{kernel}}
+% guest OS lib
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Library,framearc=.3](7.5,4.1)(9,5.1)
+\rput(8.25,4.5){\text \color{white}{library}}
+% guest OS tasks
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task](7.6,5.1)(7.9,7)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task](8,5.1)(8.3,7)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task](8.4,5.1)(8.7,7)
+
+% fourth task
+\definecolor{Driver}{rgb}{0.405,0.365,0.10}
+\definecolor{DriverShadow}{rgb}{0.202,0.18,0.05}
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=TaskShadow,framearc=.3](9.6,2.7)(11.1,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Task,framearc=.3](9.5,2.8)(11,7.2)
+\rput{60}(10.25,5){\text \color{white}{third native task}}
+% driver
+\definecolor{Task}{rgb}{0.3,0,0}
+\psframe[linewidth=0.0cm,fillstyle=solid,fillcolor=DriverShadow,framearc=.3](11.6,2.7)(13.1,7.1)
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Driver,framearc=.3](11.5,2.8)(13,7.2)
+\rput{60}(12.25,5){\text \color{white}{driver}}
+% other legends
+\rput{90}(14.5,5.25){\text userspace}
+\rput{90}(14.5,0.75){\text kernelspace}
+\rput{90}(0.6,0.75){\text hypervisor}
+\end{pspicture}
+}
+\end{pdfpic}
