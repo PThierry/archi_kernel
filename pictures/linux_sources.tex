@@ -1,0 +1,59 @@
+%%
+%%
+%% linux_sources.tex for  in /doctorat/ece/partenariat/cours/archi_kernel
+%%
+%% Made by Philippe THIERRY
+%% Login   <Philippe THIERRYreseau-libre.net>
+%%
+%% Started on  Thu Sep 30 09:57:02 2010 Philippe THIERRY
+%% Last update Thu Sep 30 14:50:41 2010 Philippe THIERRY
+%%
+
+\begin{pdfpic}
+\scalebox{0.57}{
+\begin{pspicture}(9,9)(40,20)
+
+\psset{arrows=-,armB=1,arm=5pt,levelsep=3,treesep=1,angleB=-90,angleA=90,nodesepA=2pt}
+\def\psedge#1#2{\ncangle{#2}{#1}}
+
+\pstree[nodesep=1pt,framearc=0.2]{\TR{\psframebox{\large{Linux-2.6}}}}{%
+  \pstree[nodesep=2pt]{\TR{\framebox{arch}}%
+  \nput[labelsep=8.5]{-90}{\pssucc}{\psline[linewidth=0.1]{-}(-3,4)(3,4)\rput(0,3){\text architectures list}}
+  }{%
+    \TR{\large{x86}}%
+    \TR{\large{arm}}%
+    \TR{\large{ppc}}%
+    \TR{...}%
+  }%
+  \TR{\large{block}}%
+  \TR{\large{crypto}}%
+  \TR{\large{firmware}}%
+  \TR{\large{inlcude}}%
+  \pstreecurve{%
+    \pstree[nodesep=2pt]{\TR{\psframebox{\large{drivers}}}%
+    \nput[labelsep=8.5]{-90}{\pssucc}{\psline[linewidth=0.1]{-}(-5.5,4)(5.5,4)\rput(0,3){\text driver families}}%
+    }{%
+      \TR{...}%
+      \TR{\large{acpi}}%
+      \TR{\large{atm}}%
+      \TR{\large{block}}%
+      \TR{\large{bluetooth}}%
+      \TR{\large{cdrom}}%
+      \TR{...}%
+    }%
+  }%
+  \TR{\large{fs}}%
+  \TR{\large{ipc}}%
+  \TR{\large{kernel}}%
+  \TR{\large{lib}}%
+  \TR{\large{mm}}%
+  \TR{\large{net}}%
+  \TR{\large{sample}}%
+  \TR{\large{security}}%
+  \TR{\large{sound}}%
+  \TR{\large{usr}}%
+  \TR{\large{virt}}%
+}%
+\end{pspicture}
+}
+\end{pdfpic}

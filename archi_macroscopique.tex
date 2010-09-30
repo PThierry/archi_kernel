@@ -6,39 +6,374 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Mon Sep  6 16:18:47 2010 Philippe THIERRY
-%% Last update Wed Sep 29 16:07:10 2010 Philippe THIERRY
+%% Last update Thu Sep 30 18:08:06 2010 Philippe THIERRY
 %%
 
 \chapter{Architecture macroscopique}
 
 \section{La décomposition des sources}
+\label{sec:decomp_sources}
 
 \paragraph{}
+Les sources du noyau Linux contiennent environ dix millions de ligne de code, majoritairement écrites
+en C. A la différence d'un micro-noyau qui contient environ dix mille lignes de code, il est ici
+nécessaire de prévoir une organisation des sources stricte et fine.
+
+\paragraph{}
+Dans le cadre du projet Linux, les sources sont décomposées par spécialités, et ce sur plusieurs
+niveaux. Les sources Linux sont donc sous forme d'une arborescence de répertoires, comme le montre
+le Schéma \ref{fig:linux_sources}.
+
+\begin{landscape}
+\begin{figure}[ht]
+\input{pictures/linux_sources.tex}
+\label{fig:linux_sources}
+\caption{Arborésence des sources du noyau Linux}
+\end{figure}
+\end{landscape}
+
+\begin{table}
+\begin{tabular}{l|l}
+ répertoire & contenu\\
+ \hline
+ \hline
+ {\bf arch} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Ensemble du code spécifique à une architecture matérielle donnée. Une dizaine
+ d'architecture est aujourd'hui supportée par le noyau Linux
+ \vspace{2mm}
+ \end{minipage}
+ \\
+ {\bf block} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Implémentation des éléments génériques aux périphériques en mode block (disques dur, etc)
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf crypto} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Implémentation de l'ensemble des algorithme cryptographique ainsi que de la
+ {\it glue} (On appelle {\it glue} l'ensemble des wrappers, API et macros surcouchant un c{\oe}ur
+ fonctionnel) associée
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf drivers} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Ensemble des drivers de périphérique. Ces derniers sont répartis par famille (acpi, net,
+ usb, video...)
+ \vspace{2mm}
+ \end{minipage}
+ \\
+ 
+ {\bf firmware} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Ensemble des firmwares et des éléments bas niveau nécessaires pour s'interconnecter
+ avec certains périphériques.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf fs} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Implémentation des différents filesystems. On y retrouve ext2, ext3, ext4, ntfs, vfat,
+ procfs, sysfs ou encore la sucrcouche générique à tous : vfs
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf include} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Ensemble des fichiers d'en-tête du noyau exportés vers les applicatifs. Ce répertoire
+ contient l'ensemble de l'API standard Linux.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf init} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Dans ce répertoire, on retrouve l'ensemble des éléments nécessaire au boot et n'étant pas
+ spécifique à une architecture. On retrouve ainsi la gestion de l'initramfs ou encore le montage
+ du rootfs.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf ipc} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Implémentation des IPC POSIX (Inter-Process Communications) : les pipes, les shared-memory
+ et les signaux.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf kernel} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Implémentation des éléments c{\oe}ur du noyau : gestion des modules, des  processus, de
+ l'ordonnanceur, des ACL POSIX ou encore des timers.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf lib} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Ce répertoire contient la bibliothèque de fonctions utilisée par l'ensemble du noyau. Il
+ s'agit des fonction de base nécessaire à l'implémentation de tout module Linux.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf mm} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Implémentation des allocateurs mémoire de la famille mmap. Contient également les fonctions
+ générique de gestion de la MMU.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf net} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ On retrouve dans ce répertoire l'ensemble des piles réseaux supportées par Linux, de la
+ couche 2 à la couche 4 de la pile OSI. On y retrouve la pile IPv4, IPv6, ATM, etc.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf security} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Ensemble des éléments de durcissement standard du noyau Linux (SELinux, Tomoyo, modules
+ TPM, etc).
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf sound} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Implémentation de l'architecture de gestion du son (hors pilotes de périphériques)
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+ {\bf virt} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Support de la virtualisation. On y retrouve le sous-système KVM (Kernel Virtual Machine) et
+ les élements associés. UML (User Mode Linux), qui n'est pas de la virtualisation à proprement parlé, est géré dans
+ {\it arch}.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+\end{tabular}
+\label{tab:linux_dirs}
+\caption{Répartition des fonctionalités dans l'arborescence noyau Linux}
+\end{table}
+
 
 \section{Linux, un noyau modulaire}
+\label{sec:linux_modular}
 
-\subsection{Principe d'un module}
-\paragraph{}
+\subsection{Principe des modules}
 
-\subsection{Le système de gestion des modules et des dépendances}
 \paragraph{}
+Linux est un noyau modulaire. Cela signifie qu'une partie de son implémentation peut être chargée à
+la volée, en fonction du besoin, tandis qu'une base plus petite est directement chargée en
+mémoire.\\
+Le principal intérêt et la portabilité. En effet, les premiers blocs de code qu'on a tendance à
+rendre modulable sont les pilotes. En effet, pas deux machines possèdent exactement la même liste
+de périphérique, cependant il est nécessaire de pouvoir installer Linux sur un maximum de machines
+du parc existant. Pour cela, on intègre dans le noyau les éléments de base (support du processeur,
+support de la mémoire, des interruptions et des filesystems). Afin de pouvoir s'intégrer dans
+diverses machine, on ajoute au noyau un nombre maximum de pilotes de périphériques, sous forme de
+modules. Ces pilotes tiennent de la place disque, ce qui n'est aujourd'hui pas une gène, mais ne
+sont pas chargé en mémoire vive tant qu'ils ne sont pas nécessaires. Cela permet ainsi de pouvoir
+répondre à un nombre maximum de besoins sans pour autant créer autant de noyaux que de machines.
+
+\paragraph{}
+Cette problématique est moins présente dans le cadre des architectures Windows. En effet, les
+différents pilotes de périphériques sont fournis par des tiers, après l'installation du noyau.
+C'est aujourd'hui moins vrai, Microsoft intégrant cependant un certain nombre de pilotes génériques
+afin de fournir une interface utilisable avant l'installation des pilotes tiers.
 
 \subsection{Les modules et le boot : l'initramfs}
+
 \paragraph{}
+Sous Linux, on peut quasiment tout mettre sous forme de module. Ainsi, il est possible de
+construire un noyau de base à très petite empreinte mémoire, mais qui seul est insufisant pour
+pouvoir initier la séquence de boot.
+
+\paragraph{}
+C'est par exemple le cas si l'ensemble des implémentations de systèmes de fichiers sont sous forme
+de modules. Lorsque le noyau démarre, il est alors incapable de charger la partition racine, le
+{\it rootfs}, afin d'aller y chercher les modules nécessaires.\\
+Pour compenser ce problème, un système de fichier virtuel a été créé, le ramfs, dans lequel sont
+placé les modules nécessaires au démarrage de la machine. Il est créé sous forme d'un fichier
+disjoint du fichier noyau. C'est le bootloader qui s'occupe de fournir au noyau un accès à ce
+fichier, sans que ce dernier n'ai besoin de supporter un système de fichier supplémentaire. Le
+noyau charge alors les différents modules nécessaires au chargement de la machine, en allant lire
+directement dans le fichier initramfs.\\
+Initramfs est le successeur de l'initrd, dont le but est le même, mais ayant moins de capacité. En
+effet, l'initramfs fournit plus que des modules supplémentaires. Il fournit également un rootfs
+minimum, avec un shell simple, en cas de problème au début de la phase de démarrage du système.
+
+\subsection{Le système de gestion des modules et des dépendances}
+
+\paragraph{}
+Une fois le système démarré et le véritable rootfs chargé, le noyau possède un accès aux
+répertoires de base du systèmes que sont {\tt /bin}, {\tt /etc} et {\tt /lib}. Ces trois
+répertoires contiennent les éléments nécessaire à la poursuite du démarrage. On y retrouve ainsi :
+\begin{itemize}
+\item {\bf init}, afin de lancer le premier processus du système, qui à son tour se chargera de
+démarrer les autres processus
+\item {\bf mount}, afin de monter les possibles autres partitions du système
+\item les fichiers de configuration contenus dans {\bf etc}, comme la table des systèmes de fichiers
+({\tt fstab}, la liste des comptes utilisateurs systèmes fichier {\tt passwd} et d'autres éléments
+nécessaire à l'initiatisation du système.
+\item {\bf les modules}, présents dans le répertoire {\tt /lib}, sous forme d'une arboresence de
+fichier {\tt .ko}, associés à des méta-données de dépendances.
+\end{itemize}
+
+\paragraph{}
+Le noyau, en cas de besoin, est alors capable de charger à la volée les modules supplémentaire via
+le système de gestion des modules. Le système de chargement dynamique de module se fait au travers
+d'une table de correspondance. L'exemple suivant d'écrit le cas d'un périphérique matériel:
+
+\paragraph{}
+Lorsque le noyau récupère les informations sur les périphériques, ces dernières sont sous la forme
+d'un couple fabriquant/identifiant. Ce système est normalisé, et l'ensemble des périphériques sont
+capables de fournir cette indication au logiciel.\\
+Lorsqu'on écrit un pilote de périphérique, on précise au travers de procédures standard du noyau
+Linux la liste des périphérique que le pilote sait gérer. Cette liste contient un ensemble de
+couple fabriquant/identifiant. Au moment de la compilation du noyau, lorsque le pilote est compilé
+sous forme de module (et sous forme statique également), la liste des périphérique qu'il supporte
+est ajouté à la table du noyau, avec le nom du pilote. Le noyau Linux est alors capable de
+connaitre quel pilote il doit charger, et par extension quel module. Il s'appuie alors sur le
+système de gestion des modules contenu dans le répertoire {\tt lib} pour trouver et charger le
+module et l'ensemble de ses dépendances si ce dernier en as. Bien entendu, c'est lors de la
+compilation que les dépendances sont ajoutées automatiquement et compilées, afin de s'assurer de
+leur présence au moment de l'exécution.
+
 
 \section{Les différents éléments constituants le noyau Linux}
+\label{sec:linux_content}
 
 \subsection{Le support de l'architecture}
+
 \paragraph{}
+L'élément principal du noyau est le support de l'architecture. Cet élément est nécessaire afin que
+le noyau puisse démarrer. Mais quels sont les éléments nécessaires pour supporter l'architecture ?\\
+Tout d'abord, il est nécessaire de supporter la base : le c{\oe}ur processeur. Il est donc
+nécessaire de connaître ses registres et comment s'en servir. Il est également nécessaire de
+connaître les opcodes nécessaire à la gestion des éléments de base comme la MMU, les DMA ou encore
+le frequency scaling. Il est également nécessaire de configurer correctement le timer, si cela n'a
+pas été fait par le bootloader.
+
+\paragraph{}
+On retrouve ainsi dans cette partie le vecteur d'interruption et l'ensemble des handlers associés,
+ainsi que la gestion de ces derniers (enregistrement du vecteur d'interruption, activation et
+configuration du PIC, etc). Sans cette configuration de base, le processeur fonctionne en vase clos
+et le système est inutilisable (pas de timer, pas de clavier, pas de périphériques, etc).
+
+\paragraph{}
+De plus, il est nécessaire de configurer la MMU\footnote{Memory Management Unit}, afin de passer en
+mode paginé. Cela permet de gérer les adresses virtuel et de permettre l'emploi de la fonction {\tt
+mmap}. De plus, la MMU fournit un cloisonnement mémoire nécessaire au bon fonctionnement de la
+machine, via la configuration de {\it contextes} MMU par le noyau.\\
+Malheureusement, il n'y a pas de norme d'interface pour la MMU, et par conséquent il y a autant de
+MMU que de processeur, d'où sa présence dans la partie support de l'architecture.
+
+\paragraph{}
+Enfin, les contrôleurs DMA maître, souvent présents directement dans le processeur, doivent être
+configurés. Pour finir, le support du bus PCI et au travers de lui la découverte des périphériques
+est géré également dans cette partie.
 
 \subsection{La gestion mémoire}
 \paragraph{}
+La MMU est gérée dans le support de l'architecture. Cependant, d'un point de vue plus
+macroscopique, il est nécessaire de gérer les pages et la mémoire vive. Il faut donc implémenter
+une ou des politiques d'allocation mémoire (nommées dans Linux {\it slub}et {\it slab allocators}.
+De plus, lors de la construction d'un processus et de la configuration de son contexte MMU, le
+positionnement des sections et la configuration de l'espace d'adressage doit être fait. C'est dans
+cette partie que sont gérés ces différents éléments.
 
 \subsection{Le gestionnaire d'interruptions}
 \paragraph{}
+Il est décrit dans la partie support de l'architecture que la présence d'un vecteur d'interruption
+est nécessaire, et que le noyau doit enregistrer se dernier auprès du processeur. Le vecteur
+d'interruption est en général une liste d'adresses. Dans le cas des processeurs de la famille IA32,
+ce vecteur possède une longueur de 256 adresses. On retrouve 16 cases pour les interruptions
+matérielles, 128 cases pour les interruptions logicielles, et le reste en réserve. Cependant,
+chaque adresse correspond à la position d'une fonction en mémoire, cette fonction étant spécialisée
+pour l'interruption associée. Ces fonctions sont toutes implémentées dans le noyau Linux et
+nécessite parfois l'appel à un pilote externe, comme par exemple le gestionnaire d'interruption
+clavier, qui nécessite... un pilote clavier.\\
+On retrouve également les handlers d'exception matérielles et logicielles, dont toute une partie de
+l'implémentation n'est pas spécifique au matériel, mais relatif à la politique de Linux. Ainsi, là
+où une exception de type page-miss implique une mise à jour de l'arborescence de page du processus
+associé via requête à la MMU, une exception de type division par zéro implique la terminaison du
+processus en cause.
 
 \subsection{Les syscalls}
 \paragraph{}
+Dans les denières versions du noyau 2.6 (version 2.6.35), Linux possède une cinquantaine de
+syscalls. Ces derniers sont directement appellable par les processus userspace. Leur appel est
+directement remplacé par la chaîne de compilation par une requête d'interruption 80. Cette
+interruption, gérée dans le vecteur d'interruption, redirige vers l'appel système associé en
+fonction de la valeur de certains registres, mise à jour plus haut dans le code assembleur de la
+tâche.
+
+\paragraph{}
+La plupart du temps, les syscall fournissent une inerface d'échange de données entre le processus
+et le noyau, via un buffer. C'est le cas de l'appel système {\tt read}, dont le prototype est le
+suivant :
+\begin{lstlisting}
+int	read(int fd, char *buf, int flags);
+\end{lstlisting}
+
+\paragraph{}
+En général, les appels systèmes sont décomposés en plusieurs blocs. Le premier bloc est propre au
+coeur du noyau Linux, et prend en charge les éléments génériques. Ainsi, dans le cadre du read, ce
+dernier vérifie que fd existe bien dans la table des descripteurs de fichiers.
+
+\paragraph{}
+Un descripteur de fichier est un entier auquel est associé un fichier dans le système de fichiers.
+Il est alors nécessaire de passer la main on second bloc, implémenté dans le pilote du système de
+fichier virtuel {\tt vfs}. Ce dernier est une interface homogène pour l'ensemble des systèmes de
+fichiers sous jacents, et il y en a beaucoup. Ainsi, si le fichier se trouve dans une partition
+ext3, ce bloc passe la main à l'implémentation du read du pilote de l'ext3, si c'est dans le
+procfs, il passe alors la main au pilote du procfs, si c'est dans le devfs ({\tt /dev}), alors le
+troisième bloc appellé est le pilote du {\it devfs}.\\
+Dans certain cas, ce troisième bloc est le dernier. C'est le cas par exemple des pilotes de
+systèmes de fichiers physiques (systèmes de fichiers des partitions disques). Cependant, dans le
+cas des systèmes de fichiers virtuel, un autre driver se cache encore en dessous.\\
+C'est le cas par exemple pour {\it devfs}. Ce dernier passe alors la main à l'implémentation du
+pilote de périphérique associé au fichier device.
+
+\paragraph{}
+On constate que l'implémentation des appels systèmes est stratifié. Cela permet de mieux maîtriser
+les différentes étapes du traitement, mais implique une consommation en terme de cycles processeur.
+Fort heureusement, l'exécution de l'appel système se fait dans l'espace d'adressage du processus
+appellant. Cela évite ainsi un changement de contexte. Cependant, un changement de niveau de
+privilège doit être effecuté, l'appel système se faisant avec les droits du noyau.\\
+Afin de rendre ces deux propriétés compatibles, une partie de la section de code du noyau est
+prémappée dans l'espace d'adressage du noyau, ce qui permet d'appeller les différentes fonctions du
+noyau via un simple branchement, après changement de niveaux de privilège.
 
 \subsection{Les IPC}
 \paragraph{}
@@ -62,6 +397,7 @@
 \paragraph{}
 
 \section{Coder dans le noyau Linux}
+\label{sec:linux_dev}
 
 \subsection{Configurer et compiler un noyau Linux}
 \paragraph{}
