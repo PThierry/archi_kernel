@@ -1,0 +1,69 @@
+%%
+%%
+%% fs_archi.tex for  in /doctorat/ece/partenariat/cours/archi_kernel
+%%
+%% Made by Philippe THIERRY
+%% Login   <Philippe THIERRYreseau-libre.net>
+%%
+%% Started on  Fri Oct  1 11:09:45 2010 Philippe THIERRY
+%% Last update Fri Oct  1 11:40:38 2010 Philippe THIERRY
+%%
+
+\begin{pdfpic}
+\scalebox{1}{
+\begin{pspicture}(0,0)(12,7)
+\psline{-}(0,0)(0,0)
+\definecolor{RootFS}{rgb}{0,0,0.4}
+%--- rootfs
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=RootFS,framearc=.3](1,5)(15,6) % shadow
+\rput(3,5.6){\text \color{white}{/, /etc, /boot, /bin}}
+\rput(3,5.2){\text \color{white}{/usr, /var, /tmp, /home}}
+%--- VFS
+\definecolor{VFS}{rgb}{0,0,0.7}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=VFS,framearc=.3](1,4)(15,5) % shadow
+\rput(8,4.5){\text \color{white}{Virtual File System}}
+%--- EXT3
+\definecolor{EXTFS}{rgb}{0,0.7,0}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=EXTFS,framearc=.3](1,3)(5,4) % shadow
+\rput(3,3.5){\text \color{white}{EXT3fs, EXT4fs, VFS...}}
+% bellow ext3fs
+\definecolor{Drivers}{rgb}{0.4,0,0.4}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Drivers,framearc=.3](1,2)(5,3) % shadow
+\rput(3,2.5){\text \color{white}{mass storage driver}}
+%--- PROCFS
+\rput(6,5.4){\text \color{white}{/proc}}
+\definecolor{EXTFS}{rgb}{0.7,0,0}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=EXTFS,framearc=.3](5,3)(7,4) % shadow
+\rput(6,3.5){\text \color{white}{ProcFS}}
+% bellow procfs
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Drivers,framearc=.3](5,2)(7,3) % shadow
+\rput(6,2.5){\text \color{white}{drivers}}
+%--- DEVFS
+\rput(8,5.4){\text \color{white}{/dev}}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Drivers,framearc=.3](7,3)(9,4) % shadow
+\rput(8,3.5){\text \color{white}{drivers}}
+%--- iso9660
+\rput(10.5,5.4){\text \color{white}{/media/cdrom}}
+\definecolor{ISO9660}{rgb}{0,0.4,0.4}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=EXTFS,framearc=.3](9,3)(12,4) % shadow
+\rput(10.5,3.5){\text \color{white}{ISO9660}}
+% bellow iso9660
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Drivers,framearc=.3](9,2)(12,3) % shadow
+\rput(10.5,2.5){\text \color{white}{Cdrom driver}}
+%--- USB storage (vfat)
+\rput(13.5,5.4){\text \color{white}{/media/usb}}
+\definecolor{VFat}{rgb}{0.4,0.4,0}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=VFat,framearc=.3](12,3)(15,4) % shadow
+\rput(13.5,3.5){\text \color{white}{VFat}}
+% bellow iso9660
+\definecolor{USBStack}{rgb}{0,0.2,0.2}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=Drivers,framearc=.3](12,2)(15,3) % shadow
+\rput(13.5,2.5){\text \color{white}{USB Mass storage}}
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=USBStack,framearc=.3](12,1)(15,2) % shadow
+\rput(13.5,1.5){\text \color{white}{USB Stack}}
+
+
+
+\end{pspicture}
+}
+\end{pdfpic}

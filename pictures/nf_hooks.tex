@@ -1,0 +1,33 @@
+%%
+%%
+%% nf_hooks.tex for  in /doctorat/ece/partenariat/cours/archi_kernel
+%%
+%% Made by Philippe THIERRY
+%% Login   <Philippe THIERRYreseau-libre.net>
+%%
+%% Started on  Fri Oct  1 13:35:49 2010 Philippe THIERRY
+%% Last update Fri Oct  1 14:34:06 2010 Philippe THIERRY
+%%
+
+\begin{pdfpic}
+\scalebox{1}{
+\begin{pspicture}(0,0)(15,10)
+\definecolor{NF}{rgb}{0.7,1,1}
+\psTilt{60}{%
+\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=NF](1,1)(2,9)
+\rput{90}(1.5,3){\text Netfilter}
+}
+% first step (link)
+\psframe[linewidth=0.04cm](5,1)(11,3)
+\psline[linewidth=0.04cm](5,3)(6.5,4)
+\psline[linewidth=0.04cm](11,3)(12.5,4)
+% second step (network)
+\psframe[linewidth=0.04cm](6.5,4)(12.5,6)
+\psline[linewidth=0.04cm](6.5,6)(8,7)
+\psline[linewidth=0.04cm](12.5,6)(14,7)
+% third step (transport)
+\psframe[linewidth=0.04cm](8,7)(14,9)
+\rput(7,0){\text \FIXME refaire en 2D}
+\end{pspicture}
+}
+\end{pdfpic}

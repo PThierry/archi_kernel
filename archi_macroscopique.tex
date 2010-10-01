@@ -6,7 +6,7 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Mon Sep  6 16:18:47 2010 Philippe THIERRY
-%% Last update Thu Sep 30 18:08:06 2010 Philippe THIERRY
+%% Last update Fri Oct  1 16:28:52 2010 Philippe THIERRY
 %%
 
 \chapter{Architecture macroscopique}
@@ -21,22 +21,29 @@ nécessaire de prévoir une organisation des sources stricte et fine.
 
 \paragraph{}
 Dans le cadre du projet Linux, les sources sont décomposées par spécialités, et ce sur plusieurs
-niveaux. Les sources Linux sont donc sous forme d'une arborescence de répertoires, comme le montre
-le Schéma \ref{fig:linux_sources}.
+niveaux. Les sources Linux sont donc sous forme d'une arborescence de répertoires.
 
-\begin{landscape}
-\begin{figure}[ht]
-\input{pictures/linux_sources.tex}
-\label{fig:linux_sources}
-\caption{Arborésence des sources du noyau Linux}
-\end{figure}
-\end{landscape}
+\paragraph{}
+Afin de mieux comprendre les différents composants présent dans le noyau, le tableau \ref{tab:linux_dirs}
+décrit, pour chaque répertoire, les composants qui y sont hébergés. Ce tableau ne décrit que le
+premier niveau de répertoires, mais l'arbre source Linux est assez profond, pouvant descendre
+jusqu'à quatre ou cinq niveaux de répertoires selon le type de composant. On le constate d'ailleurs
+lors de l'utilisation de l'outil de configuration du noyau, qui présente une arborescence assez
+similaire.
 
-\begin{table}
-\begin{tabular}{l|l}
- répertoire & contenu\\
- \hline
- \hline
+\paragraph{}
+\begin{center}
+\tablefirsthead{\hline%
+     Répertoire & Contenu \\%
+     \hline \hline}
+   \tablehead{\hline \multicolumn{2}{|l|}{\small\sl suite de la page précédente}\\
+   \hline  Répertoire & Contenu\\ \hline\hline}
+   \tabletail{\hline \multicolumn{2}{|r|}{\small\sl Suite page
+   suivante~\ldots}\\\hline} \tablelasttail{\hline}
+   \bottomcaption{Répartition des fonctionalités dans l'arborescence noyau Linux}
+   \par
+\begin{supertabular}{l|l}
+\label{tab:linux_dirs}
  {\bf arch} &
  \begin{minipage}{0.7\linewidth}
  \vspace{2mm}
@@ -171,6 +178,25 @@ le Schéma \ref{fig:linux_sources}.
  \end{minipage}
  \\
 
+ {\bf tools} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Implémentation de divers outils de mesure.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
+{\bf scripts} &
+ \begin{minipage}{0.7\linewidth}
+ \vspace{2mm}
+ Le répertoire script contient les élements nécessaire à la compilation du noyau. Il s'agit
+ majoritairement de fichiers de scripts génrant certains éléments comme le header de version du
+ noyau. Ce répertoire ne possède pas de composant source (hors headers) intégrés au binaire du
+ noyau.
+ \vspace{2mm}
+ \end{minipage}
+ \\
+
  {\bf virt} &
  \begin{minipage}{0.7\linewidth}
  \vspace{2mm}
@@ -180,11 +206,8 @@ le Schéma \ref{fig:linux_sources}.
  \vspace{2mm}
  \end{minipage}
  \\
-\end{tabular}
-\label{tab:linux_dirs}
-\caption{Répartition des fonctionalités dans l'arborescence noyau Linux}
-\end{table}
-
+\end{supertabular}
+\end{center}
 
 \section{Linux, un noyau modulaire}
 \label{sec:linux_modular}
@@ -369,26 +392,236 @@ pilote de périphérique associé au fichier device.
 On constate que l'implémentation des appels systèmes est stratifié. Cela permet de mieux maîtriser
 les différentes étapes du traitement, mais implique une consommation en terme de cycles processeur.
 Fort heureusement, l'exécution de l'appel système se fait dans l'espace d'adressage du processus
-appellant. Cela évite ainsi un changement de contexte. Cependant, un changement de niveau de
-privilège doit être effecuté, l'appel système se faisant avec les droits du noyau.\\
+appelant. Cela évite ainsi un changement de contexte. Cependant, un changement de niveau de
+privilège doit être effectué, l'appel système se faisant avec les droits du noyau.\\
 Afin de rendre ces deux propriétés compatibles, une partie de la section de code du noyau est
 prémappée dans l'espace d'adressage du noyau, ce qui permet d'appeller les différentes fonctions du
 noyau via un simple branchement, après changement de niveaux de privilège.
 
 \subsection{Les IPC}
 \paragraph{}
+Linux implémente les IPC POSIX. Il s'agit des trois suivantes :
+\begin{itemize}
+\item Les signaux, permettant de communiquer de manière simple au travers de l'implémentation de
+handlers de signaux au niveau logiciel. Parmis ces signaux, trois (\FIXME à vérifier) ne sont pas
+redéfinissable par une tache : SIGKILL et SIGTERM et SIGILL. Ces signaux provoque la terminaison
+de la tache cible. Un signal n'est qu'une valeur numérique. Elle ne contient aucune autre
+information que sa valeur.
+\item Les pipes, fournissant un canal de communication unidirectionnel. Les pipes étant vus sous
+formes de descripteurs de fichiers partagés entre deux taches, ces dernières doivent être créées
+par une même tache parente, responsable de la création du pipe en avance de phase.
+\item Les mémoire partagées. Il s'agit de la famille {\it shm}. Il s'agit de page mémoires (dont la
+granularité est généralement de 4096 octets) que deux processus partagent. L'écriture ou la lecture
+dans cette page mémoire se fait au travers des fonctions de la famille {\it shm} comme {\tt shmget}.
+\end{itemize}
+
+Il existe d'autre moyens de communiquer entre processus, comme par exemple au travers d'une socket
+UNIX, mais il ne s'agit pas, dans ce cas, d'une IPC.
 
 \subsection{L'ordonnanceur est la gestion des taches}
-\paragraph{}
 
-\subsection{Le système de fichiers}
 \paragraph{}
+Un noyau doit impérativement gérer des taches, faute de quoi sont intérêt serait fortement réduit.
+POSIX fournit un certain nombre de propriétés qu'une tache doit posséder :
+\begin{itemize}
+\item un identifiant, nommé {\it pid} (Process IDentifier)
+\item une tache parente, connue via son identifiant, le {\it ppid} (Parent Process IDentifier)
+\item un utilisateur propriétaire de la tache, définissant un userid associé, et en conséquence
+      ses droit d'accès utilisateur.
+\item un groupe propriétaire de la tache, définissant un groupid associé, et ses droit d'accès
+      groupe.
+\item une politique d'ordonnancement, pouvant être de type RR (Round Robin), FIFO, ou encore OTHER)
+\item une priorité, afin de l'intégrer dans sa politique d'ordonnancement
+\item un age, pouvant avoir un impact sur sa priorité, au travers de la gestion du vieillissement
+      des taches.
+\item sa priorité modifiée, nommée priorité {\it nice}, conséquence du vieillissement mais
+      également d'une possible redéfinition de sa priorité via la commande {\tt nice}.
+\item un contexte MMU, correspondant à un identifiant d'espace d'adressage, afin de savoir quel
+      espace charger au moment de son ordonnancement.
+\item un tableau de descripteur de fichier, listant l'ensemble des file descriptors et des fichiers
+      associés ouvert, ainsi que les droits demandés à l'ouverture
+\item Quelques propriétés en terme de charge maximum, comme le nombre de file descriptors maximum
+      ouvrable.
+\end{itemize}
+
+\paragraph{}
+Une tache possède d'autres propriétés, mais celles nommées ici sont les principales. On constate
+donc qu'une tache est un élément complexe, nécessitant une grosse structure de donnée, ainsi qu'une
+interface riche de gestion de tache.
+
+\paragraph{}
+Qui dit tache dit bien sur ordonnanceur. Linux possède de base plusieurs types d'ordonnanceurs. Il
+possède tout d'abord des ordonnanceurs temps réel (FIFO et RR), mais également non-temps réel. A
+ses ordonnanceur sont associées des priorités:
+\begin{enumerate}
+\item 100 priorités différentes pour les ordonnanceurs temps réel, de 0 (la plus basse) à 99
+\item 40 priorités pour les ordonnanceurs non temps réel, de 20 (la plus basse), à -19.
+\end{enumerate}
+Cela fait au total 140 priorités à gérer. Le fait qu'il y aie plusieurs ordonnanceurs s'exécutant en
+même temps, le système d'ordonnancement de Linux est assez complexe. Cependant, depuis le noyau
+2.6.11, l'ordonnanceur standard pour le non temps réel ({\it SCED\_OTHER}) possède une complexité
+en $O(1)$. Avec l'accroissement du nombre de taches s'exécutant en parallèle sur une machine,
+s'était une nécessité.
+
+\paragraph{}
+De plus, afin d'éviter les locks liés aux architectures multi-c{\oe}urs, Linux est passé d'une file
+unique de gestion des taches à une file par c{\oe}ur. Cela évite que deux instance de
+l'ordonnanceur s'exécutant en parallèle génère un retard sur l'une d'entre elle.
+
+\subsection{Les systèmes de fichiers}
+\paragraph{}
+La gestion des systèmes de fichiers sous Linux fonctionne en couche. Le but est que du point de vue
+utilisateur, un seul système de fichier ne soit vu. Cela permet de fournir aux applications une
+interface d'accès unique et homogène.\\
+Le schéma \ref{fig:fs_archi} fournit un exemple d'architecture en couche telle que présente dans
+Linux. Ce schéma n'est pas exhaustif : il existe d'autres systèmes de fichiers non présentés ici
+comme le {\it NTFS} ou encore, parmi les systèmes de fichiers virtuels, les {\it sysfs}, {\it ramfs}
+et {\it tmpfs}, mais le principe de fonctionnement reste le même pour tous, avec un accès au travers
+du vfs.
+
+\begin{center}
+\begin{figure}[H]
+\input{pictures/fs_archi.tex}
+\caption{Architecture en couche de la gestion des systèmes de fichiers}
+\label{fig:fs_archi}
+\end{figure}
+\end{center}
 
 \subsection{La pile réseau}
+
 \paragraph{}
+La pile réseau Linux est très riche et ne se limite pas au seul couple Ethernet/IP. On y retrouve
+également un certain nombre de protocoles legacy comme ATM, TDMA ou encore TokenRing, ainsi que le
+support des normes IEEE 802.11, 802.15.4, etc. Du fait de sa richesse, la pile réseau Linux est
+très complexe. Sont décrit ici les structures principales, dans le cadre de la pile IP.
+
+\paragraph{}
+Afin d'exploiter au mieux les capacités réseau de Linux, il existe un composant, assez volumineux
+(environ cent mille lignes de code) nommé {\it Netfilter}. Ce composant est ce qu'on appelle un
+treillis: il accompagne le traitement du flux réseau dans le noyau, et propose des accroche
+permettant d'effectuer des traitements spécifique à divers moment du cheminement des paquets dans
+la pile réseau.
+
+\paragraph{}
+Pour comprendre l'architecture de Netfilter il est avant tout nécessaire de bien avoir en tête la pile
+IP, et sa décomposition entre le noyau et le mode utilisateur. Pour rappel, le traitement des
+en-têtes s'effectue dans le noyau jusqu'à la couche 4 du modèle OSI. C'est ensuite à l'applicatif
+de traiter le reste du paquet.
+La liaison entre noyau et userspace se fait, dans le cadre d'un environnement POSIX comme Linux,
+via des sockets. Netfilter n'intervient que dans la partie noyau, mais peut parfois remonter plus
+haut que la couche 4, c'est ce qu'on appelle le conntracking. Son usage est décrit plus loin.
+
+\paragraph{}
+Avant que le paquet n'arrive au niveau de la couche liaison de la pile IP, il a déjà parcouru du
+chemin dans le noyau Linux. En effet, ce dernier a été chargé à partir de la mémoire de la carte réseau,
+et structuré de manière standardisée dans une structure propre au noyau Linux appelée {\it
+sk\_buff}.\\
+Cette structure contient un certain nombre d'informations sur le paquet, comme par exemple :
+\begin{itemize}
+\item Sa taille
+\item Son interface d'entrée (pointeur vers la stucture {\it net\_device} correspondante du noyau)
+\item Son interface de sortie (champ remplit au moment du routage du paquet si sa destination n'est
+      pas locale)
+\item Sa date d'arrivée
+\item Des pointeurs divers vers les en-têtes liaison et IP, ainsi que vers la fin du paquet
+\item la somme de contrôle du paquet
+\item Sa priorité
+\end{itemize}
+
+\paragraph{}
+Linux est capable de forwarder du flux, au niveau liaison (bridging) et au niveau réseau (routing).
+Le flux est alors décapsulé respectivement jusqu'à la couche liaison et jusqu'à la couche réseau.
+Cela permet de diriger se dernier vers la bonne interface, et si besoin de construire une en-tête
+différente de la précédente (cas du bridging, avec changement de MAC source, du DNAT, du SNAT, et
+du MASQUERADING), voire de changer de protocole de niveau liaison ou transport. Linux agit alors comme une
+gateway.
+
+\paragraph{}
+Il est également possible de modifier le chemin prévu dans le datagramme (proxying, etc). On parle
+alors dans ces cas là de "paquet mangling", puisque l'on va modifier des champs dans les en-têtes.
+Sont également modifiés des champs comme le TTL, et un possible re-découpage des datagrammes peut
+être fait, selon les spécification du réseau de sortie.
+
+\paragraph{}
+Ce traitement doit se faire de manière rapide afin de limiter la latence de transit, et doit pouvoir
+être ordonnancé en fonction des besoins du réseau. Il s'agit d'une problématique complexe sur la
+qualité de service induite par la latence. Une solution a été mise en place sous Linux, décrite
+plus loin.
+
+\paragraph{}
+Netfilter est la pierre angulaire de tous ces traitements. Ce n'est pas lui qui implémente les
+fonctions de la pile IP, mais il ordonnance leurs appels, en fonction des valeurs qu'elles retournent,
+et selon les informations fournies par les {\it sk\_buffs}.
+
+\paragraph{}
+Netfilter s'appuie sur un schéma générique de traitement des paquets. Il définit 5 traitements
+successifs au niveau IP :
+\begin{itemize}
+\item NF\_IP\_PREROUTING, qui va faire un traitement préalable au routage du paquet.
+      C'est ici qu'iptables gère le DNAT par exemple. Ce traitement ce fait à l'arrivée des paquet en entrée
+\item NF\_IP\_IN, pour le traitement avant la remontée vers la socket locale du paquet.
+      Ce hook est utilisé pour la finalisation du traitement des paquets entrant.
+\item NF\_IP\_FORWARD, pour le forwarding de paquet uniquement. C'est cette accroche qui va appeler
+      le module de routage du noyau (traitement de la table de routage)
+\item NF\_IP\_OUT, pour le pré-traitement des paquets en émission à partir d'une source locale
+      uniquement.
+\item NF\_IP\_POSTROUTING, pour le post-traitement du paquet en émission. Exécuté à la fois lors du routage
+      et lors de l'émission de paquets depuis un service local. On y trouve par exemple les règles
+      d'encapsulation IPSEC pour le mode tunnel. C'est le dernier à être appelé avant émission du paquet.
+\end{itemize}
+Ces cinq traitements sont également présents au niveau liaison, afin de répondre au besoin de
+bridging. Cependant, NF\_BR\_PREROUTING et NF\_BR\_POSTROUTING sont constamment appelés. Le schéma
+\ref{fig:nf_hooks} décrit le positionnement des différentes accroches Netfilter.
+
+\begin{figure}
+\input{pictures/nf_hooks.tex}
+\label{fig:nf_hooks}
+\caption{Positionnement des différentes accroches Netfilter sur la pile IP}
+\end{figure}
+
+\paragraph{}
+Des exemples de services se basant sur les hooks de Netfilter sont les services de conntracking.
+Un certain nombre de protocoles de niveau supérieur à la couche transport utilise plusieurs ports
+pour fonctionner, en choisissant un port à la volée, durant une période d'initialisation. C'est
+le cas du protocole FTP, sur le port 21, qui choisit dynamiquement un port pour émettre des données
+binaires tout en maintenant le port 21 ouvert pour la signalisation.\\
+Cependant, lorsqu'un firewall est actif sur la machine, on croit souvent être obligé de configurer
+une plage de ports ouverts de manière statique afin de permettre ce cas d'emploi.
+En réalité, il existe un module dans le noyau linux, qui s'accroche à Netfilter et qui va traiter
+le protocole FTP dans le noyau, à la volée. Il décapsule le flux jusqu'à arriver au niveau du flux
+FTP, afin de détecter la négociation de port. Une fois le port négocié, le module ouvre le port à
+la volée entre le client et le serveur, ce qui permet au flux de données de traverse.
+
+\paragraph{}
+Il existe aujourd'hui un grand nombre de module de conntracking, allant du support du protocole FTP au
+support des protocole SIP et H323.
 
 \subsection{La pile USB}
+
 \paragraph{}
+L'architecture USB est un bloc volumineux de Linux. En effet, entre les différentes normes (OHCI et
+UHCI pour l'USB 1.1, EHCI pour l'USB 2 et l'XHCI pour l'USB 3.0), les différents modes associés
+(mode Interrupt, Bulk, etc) et les différents types de périphériques pouvant s'y connecter (disques
+durs, caméra, contrôleurs réseau (ethernet ou Wifi), claviers, souris, etc.), le sous-système USB
+est très consommateur à la fois de développeurs et de modules.
+
+\paragraph{}
+La pile USB Linux reprend, pour la dénomination de ses structures et ses champs, les noms définis
+dans les normes associées, ce qui simplifie l'usage des API.\\
+L'élément de base le plus fréquement utilisé dans le cadre des communications avec les
+périphériques USB est l'{\it URB}. Il s'agit d'une structure de données faisant office de support
+dans la communication entre pilote et périphérique. On peut le voir comme l'équivalent du {\it
+sk\_buff} pour les interfaces réseaux.
+
+\paragraph{}
+Sous Linux, le système USB est vu comme un arbre. Les noeuds sont les hubs USB, gérés nativement
+par le noyau via un thread spécifique nommé {\it khubd}. Ce démon est la porte de sortie des
+différents évènements périphériques transitant par les hubs. C'est lui qui informe alors le noyau
+qu'un évènement a eu lieu, et appelle le driver associé. {\it Khubd} est en attente d'évènement au
+travers d'un mécanisme de polling, dont la période est une propriété fournie par le controlleur USB
+matériel.
+
+\FIXME: continuer, mettre un peu au propre ces qques paragraphes
 
 \subsection{La sécurité et la cryptographie}
 \paragraph{}
