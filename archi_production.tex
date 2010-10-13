@@ -6,16 +6,206 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Mon Sep  6 16:28:58 2010 Philippe THIERRY
-%% Last update Mon Sep  6 16:30:26 2010 Philippe THIERRY
+%% Last update Wed Oct 13 17:21:42 2010 Philippe THIERRY
 %%
 
 \chapter{Le système de production du noyau}
 
+{\it
+Le système de production du noyau est très évolué. Il se base sur une architecture de Makefile dont
+la grammaire lui est spécifique. De plus, le système de configuration est décrit au travers de
+fichiers de descriptions qu'il est nécessaire de rédiger pour intégrer un module au système de
+production du noyau.
+}
+
+\section{Configurer et compiler un noyau Linux}
+\paragraph{}
+Le noyau Linux possède un système de production évolué, basé sur une architecture de Makefile. Il
+possède de plus des outils de configuration permettant de définir les propriétés du noyau à
+compiler. Pour cela, il fournit une interface en mode texte pur, via la commande {\tt make
+config}.\\
+Cette interface reste fastidueuse à employer car fonctionne dans un mode question/réponse aussi long
+que le noyau Linux est riche. Pour simplifier la configuration du noyau, il existe deux autres
+modes :
+\begin{itemize}
+\item Une interface texte employant la libncurses, fournissant une interface plus agréable
+décomposant la configuration en un arbre de fonctionalités dans lequel on peut naviguer à son gré.
+Cette interface est appellée par la commande {\tt make menuconfig}. Le schéma \ref{fig:menuconfig}
+fournit une illustration de cette interface.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=11cm]{pictures/make_menuconfig}
+\label{fig:menuconfig}
+\caption{Exemple de fenêtre du configurateur {\it menuconfig}}
+\end{center}
+\end{figure}
+
+\item Une interface graphique, fournissant une interface assez proche de la précédante, mais du fait
+qu'elle soit graphique simplifie la configuration pour les personnes peu habituées au mode texte.
+Cette interface est appellée par la commande {\tt make xconfig}. Le schéma \ref{fig:xconfig}
+fournit une illustration de cette interface.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pictures/make_xconfig}
+\label{fig:xconfig}
+\caption{Exemple de fenêtre du configurateur {\it xconfig}}
+\end{center}
+\end{figure}
+
+\end{itemize}
+
+\paragraph{}
+La configuration du noyau Linux génère un fichier de configuration, nommé {\tt .config}, placé à la
+racine des sources du noyau. Ce fichier est un fichier ASCII fournissant la liste des options avec
+le choix qui a été fait pour chaque (activée ou non, en mode module ou statique.\\
+Il n'est pas toujours nécessaire de passer par l'étape de configuration du noyau. En effet, il
+existe des configurations {\it types} déjà présentes dans les sources. Chaque configuration étant
+liée à l'architecture pour laquelle le noyau est compilé, ces fichiers de configuration se trouvent
+dans le répertoire {\tt arch/<architecture>/configs}. Le tableau \ref{tab:ppc_defconfig} montre le
+contenu du répertoire {\tt arch/ppc/configs}.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{lll}
+adder875\_defconfig & amigaone\_defconfig & c2k\_defconfig \\
+cell\_defconfig & celleb\_defconfig & chrp32\_defconfig \\
+ep8248e\_defconfig & ep88xc\_defconfig & g5\_defconfig \\
+gamecube\_defconfig & holly\_defconfig & iseries\_defconfig \\
+linkstation\_defconfig & maple\_defconfig & mgcoge\_defconfig \\
+mgsuvd\_defconfig & mpc512x\_defconfig & mpc5200\_defconfig \\
+mpc7448\_hpc2\_defconfig &  mpc8272\_ads\_defconfig & mpc83xx\_defconfig \\
+mpc85xx\_defconfig & mpc85xx\_smp\_defconfig & mpc866\_ads\_defconfig \\
+mpc86xx\_defconfig & mpc885\_ads\_defconfig & pasemi\_defconfig \\
+pmac32\_defconfig & ppc40x\_defconfig & ppc44x\_defconfig \\
+ppc64\_defconfig & ppc64e\_defconfig & ppc6xx\_defconfig \\
+pq2fads\_defconfig & prpmc2800\_defconfig & ps3\_defconfig \\
+pseries\_defconfig & storcenter\_defconfig & tqm8xx\_defconfig \\
+wii\_defconfig & & \\
+\end{tabular}
+\label{tab:ppc_defconfig}
+\caption{Liste des fichiers de configurations génériques pour l'architecture PPC}
+\end{center}
+\end{table}
+\paragraph{}
+Comme la montre le tableau \ref{tab:ppc_defconfig}, il peut y avoir un grand nombre de fichiers de configuration
+pour une même architecture. Cela dépend de la richesse matérielle de l'architecture.\\
+Pour générer le fichier {\tt \index{.config}.config} à partir d'un fichier \index{defconfig}defconfig préexistant, il suffit de
+donner le nom du fichier defconfig en argument de make :
+\begin{lstlisting}
+$ make gamecube_defconfig
+\end{lstlisting}
+Le fichier {\tt .config} est alors créé et on peut immédiatement démarrer la phase de compilation.
+
+\paragraph{}
+Il est tout à fait possible de créer des fichiers defconfig personnels. Ces derniers doivent être
+rangés de la même manière que les autres, dans le répertoire {\it configs} de l'architecture pour
+laquelle ils ont été créé. On peut ensuite les utiliser de la même manière que les autres fichiers
+\index{defconfig}defconfig.
+
+
+\section{Les fichiers \index{Kconfig}Kconfig et l'interface de configuration}
+
+\paragraph{}
+Le système de configuration du noyau s'appuie sur des fichiers {\it Kconfig}, dont le rôle est de
+décrire les différents modules du répertoire courant, en définissant leur nom, leurs dépendances
+ainsi que l'aide contextuelle associée.\\
+Les fichiers Kconfig se lisent et s'écrivent très bien, leur syntaxe étant assez simple.
+Tout d'abord, le Kconfig est vu dans le système de configuration comme un noeud de l'arbre.
+Si le n{\oe}ud possède une dépendance, comme c'est le cas dans le script \ref{lst:kconfig}, on
+l'indique en dessous de la ligne {\tt comment}. Ainsi, le n{\oe}ud ne sera visible dans le système
+de configuration uniquement si l'ensemble des dépendances sont activées. Ainsi, on ne peux activer
+un pilote de périphérique USB sans le support de l'USB.\\
+Le script \ref{lst:kconfig} montre un extrait du fichier {\tt drivers/usb/misc/Kconfig}, décrivant
+les différents modules présents dans ce répertoire.
+
+\begin{lstlisting}[caption={Contenu type d'un fichier Kconfig},label={lst:kconfig}]
+#
+# USB Miscellaneous driver configuration
+#
+comment "USB Miscellaneous drivers"
+        depends on USB
+
+config USB_EMI62
+        tristate "EMI 6|2m USB Audio interface support"
+        depends on USB
+        ---help---
+          This driver loads firmware to Emagic EMI 6|2m low latency USB
+          Audio and Midi interface.
+
+          After firmware load the device is handled with standard linux
+          USB Audio driver.
+\end{lstlisting}
+
+\paragraph{}
+Lorsque l'on rentre dans ce n{\oe}ud, la liste des modules présents dans le Kconfig est donnée.
+Pour donner un titre au n{\oe}ud, on utilise la ligne suivante :
+\begin{lstlisting}
+menu "nom du noeud"
+	depends on DEPENDANCE
+\end{lstlisting}
+
+\paragraph{}
+Pour chaque module du noyau présent dans le répertoire courant, on créé un bloc {\tt config}. Ce
+bloc contient la dénomination du module (par eg. USB\_LD), ses dépendances (dont le fonctionnement
+reste le même, un petit paragraphe d'aide et le mode d'activation. Le mode d'activation peut être de
+deux types :
+\begin{enumerate}
+\item {\tt bool "Nom du module"}: le module est soit désactivé, soit intégré statiquement dans
+l'image noyau.
+\item {\tt tristate "Nom du module"}: le module est soit désactivé, soit créé sous forme d'un module
+noyau dynamique (fichier .ko) soit intégré statiquement dans l'image noyau.
+\end{enumerate}
+
+\paragraph{}
+Lorsque le répertoire courant possède un sous-répertoire, on le précise via une ligne {\tt source} :
+\begin{lstlisting}
+source "drivers/usb/misc/sisusbvga/Kconfig"
+\end{lstlisting}
+Du point de vue du système de configuration, cela indique qu'il existe un fils dans l'arbre de
+configuration. L'argument de la ligne source définit l'emplacement du fichier Kconfig fils en
+partant de la racine du noyau.
+
+
 \section{La structure de Makefiles}
 
-\section{Les fichiers KConfig et l'interface de configuration}
+\subsection{Répartition des rôles entre les Makefiles}
 
-\subsection{La syntaxe des KConfig}
+\paragraph{}
+Afin de simplifier le travail des développeurs, le Makefile de la racine gère la plupart des
+informations de productions comme les flags gcc, la gestion de la cross-compilation, etc.\\
+Les Makefiles des différents répertoire ont pour but de déclarer la présence de sous-répertoire et
+de déclarer les différents modules du répertoire courant.
 
-\subsection{Les dépendances inter-modules}
+\subsection{Généralités sur le Makefile de la racine}
+
+\subsection{Syntaxe des fichiers Makefile}
+
+\paragraph{}
+Il est expliqué précédement qu'un module peut être activé de deux manières : soit en tant que
+module noyau indépendant (mode {\tt m}), soit en tant qu'élement de l'image noyau (mode {\tt y}).
+A un module nommé FOOBAR, est associé, lors de la configuration une variable nommée {\tt
+CONFIG\_FOOBAR}. Cette variable peut alors valoir {\tt y} ou {\tt m} selon la configuration, ou ne
+rien valoir si le module n'est pas activé.
+
+\paragraph{}
+C'est cette variable qui est utilisé dans les Makefile pour déterminer si le module doit être
+compilé, et si oui de quelle manière.
+La plupart du temps, un module noyau est composé que d'un seul fichier source. C'est une règle qui
+est définie dans le coding style du noyau Linux. Un module peut être composé de plusieurs fichiers
+uniquement si ces derniers correspondent à des fonctionnalités qui, lorsque prisent seules,
+répondent à une problématique. C'est souvent le cas des pilotes de carte ethernet, ou la gestion du
+{\it Phy} et la partie {\it MII} de la carte sont dans des fichiers disjoints.
+
+\paragraph{}
+Lorsque le module est composé d'un seul fichier, il suffit alors d'ajouter une seule ligne au
+fichier Makefile:
+\begin{lstlisting}
+obj-$(CONFIG_FOOBAR) := foobar.c
+\end{lstlisting}
+A l'inverse, si le module est composé de plusieurs fichiers, on le déclare ainsi:
+\begin{lstlisting}
+obj-$(CONFIG_FOOBAR) := foobar.c
+foobar-objs          := foobar_core.o \
+                        foobar_extend.o \
+                        foobar_debug.o
+\end{lstlisting}
 

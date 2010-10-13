@@ -6,7 +6,7 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Mon Sep  6 16:14:09 2010 Philippe THIERRY
-%% Last update Tue Oct  5 16:28:02 2010 Philippe THIERRY
+%% Last update Wed Oct 13 17:24:03 2010 Philippe THIERRY
 %%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,12 +22,14 @@
 
 \usepackage[hundred]{vrsion}				% versioning support
 \usepackage[latin1]{inputenc}				% char format
-\usepackage{listings}					% lists support. Used for code
+\usepackage{lscape}
+\usepackage{rotating}
 \usepackage[usenames,dvipsnames]{color}					% basic color support
 \usepackage[T1]{fontenc} 				% caracteres norme iso-8859.
 			 				% risque de ne pas marcher avec les fichiers crees
                          				% sous windows.
-\usepackage[english,francais]{babel}			% french support
+\usepackage[francais]{babel}			% french support
+\usepackage{listings}					% lists support. Used for code
 \usepackage{amsfonts}					% special fonts support (math, etc)
 \usepackage{amsmath}
 \usepackage{amssymb}					% special symbols support
@@ -61,11 +63,11 @@
 \usepackage{alltt}
 \usepackage[sectionbib]{natbib}
 \usepackage{chapterbib}
-\usepackage{lscape}
+
 
 \usepackage[Glenn]{fncychap}				% 'Glenn' chapter titles
 \usepackage{supertabular}
-\usepackage{rotating}
+
 
 % charts support
 \usepackage{pdftricks}
@@ -153,6 +155,14 @@
  xrightmargin=0.5cm, % 					%
      xleftmargin=0.5cm 					%
     } 							%
+
+\lstloadlanguages{make,C}
+
+\lstdefinelanguage{Make}
+{
+    keywords={ifeq,ifneq,ifdef,ifnded,else,endif,include},
+    sensitive=true,
+}
 
 
 \input{titlepage.tex}

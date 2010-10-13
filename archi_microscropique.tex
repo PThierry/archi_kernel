@@ -6,12 +6,107 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Mon Sep  6 16:26:28 2010 Philippe THIERRY
-%% Last update Wed Sep 29 16:12:35 2010 Philippe THIERRY
+%% Last update Wed Oct 13 17:34:14 2010 Philippe THIERRY
 %%
 
 \chapter{Architecture avancée}
 
-\section{Les interfaces noyau pour les modules}
+{\it
+Ce chapitre décrit le système de production du noyau, et comment on implémente et on intègre des
+modules dans le noyau. Ce chapitre fournit une introduction suffisante pour pouvoir démarrer un
+projet de module noyau. Pour des travaux plus poussés, il est conseillé de lire le livre {\tt Linux
+device drivers 3}. Ce dernier fournit un grand nombre d'informations pour le développement de divers
+pilotes de périphérique dans le noyau. Ce livre est trouvable sur internet, en licence Creative
+Commons.
+}
+
+\section{Implémenter un module externe}
+
+\subsection{Avantages et inconvénients}
+
+\paragraph{}
+Le moyen le plus simple lorsqu'on écrit un module pour le noyau Linux est de le gérer en dehors du
+système de production du noyau. Cela fournit quelques avantages :
+\begin{itemize}
+\item Une gestion des sources simple
+\item Une dépendance à la version du noyau limité à l'usage des interfaces de ce dernier
+\item Une plus grande souplesse pour passer d'une version mineure de noyau à une autre
+\end{itemize}
+Cependant, il y a également quelques inconvénients :
+\begin{itemize}
+\item Impossibilité d'intégrer le module de manière statique dans le noyau
+\item Impossibilité d'intégrer le module dans le système de configuration du noyau
+\item Incompatibilité avec les systèmes de génération de paquets Linux, comme {\tt make-kpkg}
+\item Impossibilité de déclarer les besoins en terme de dépendances
+\end{itemize}
+Cependant, c'est le moyen le plus simple lorsque l'on débute dans le développement de module noyau.
+
+\subsection{S'accrocher au système de production du noyau}
+
+\paragraph{}
+La construction d'un module externe implique de s'appuyer sur le système de production du noyau,
+même si les sources du modules sont {\it hors-arbre}.\\
+Pour cela, on définit un Makefile à deux niveau, permettant d'être appelé à la fois sans et au
+travers du système de production du noyau.\\
+Le script \ref{lst:mod_makefile} est un exemple de Makefile pour la production d'un module externe.
+
+\begin{lstlisting}[language=Make,caption={Makefile pour un module externe},label=lst:mod_makefile]
+TODEL=module.symvers
+
+ifeq ($(KERNELRELEASE),)
+SYSVERSION := $(shell uname -r)
+KERNELDIR ?= /lib/modules/$(SYSVERSION)/build
+PWD := $(shell pwd)
+
+
+all : modules
+
+modules:
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+
+modules_install:
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules_install
+
+clean:
+	$(RM) $(RMFLAGS) $(OBJS) $(TODEL)
+
+else
+
+obj-m := f foobar.o
+foobar-objs := foobar-extends.o
+
+endif
+\end{lstlisting}
+
+\paragraph{}
+Les Makefiles des modules externes se basent sur une détection de la variable KERNELRELEASE pour
+savoir si ils sont appelés par le système de production du noyau ou directement par l'utilisateur.
+En effet, le système de production du noyau renseigne cette variable avec la version courante du
+noyau.\\
+Comme le montre le script \ref{lst:mod_makefile}, les cibles sont les même que celles du noyau pour
+les modules, à savoir {\it modules} et {\it modules\_install}.
+
+\paragraph{}
+Lorsque l'on exécute la cible {\it modules}, la variable KERNELEASE n'est pas renseignée, en
+conséquence, on exécute la cible modules du Makefile courant. Cette dernière appelle le système de
+production du noyau au travers de l'option {\tt -C} de make. C'est alors lui qui prend la main, et
+qui va traiter une seconde fois le Makefile en s'appuyant sur l'option {\tt -M} qui lui a été
+fournie, précisant le répertoire du module. Cependant, lors de ce second traitement, la variable
+KERNELRELEASE a été renseignée, et c'est le contenu du {\tt else} qui est prise en compte. On y
+retrouve la déclaration du module identique à celles présentes dans les Makefiles du noyau Linux.
+Le noyau compile alors les sources du module pour fabriquer un fichier {\it ko}.
+
+\paragraph{}
+On constate dans ce Makefile que c'est directement le mot {\tt obj-m} qui est utilisé, et qu'il n'y
+a pas de variable définie pour nommer le module. Cela est du au fait que lorsque l'on appelle le
+makefile du module, c'est nécessairement pour compiler un module noyau au format {\tt ko}. Lui
+définir un nom n'a pas d'intérêt car ce dernier n'est pas intégré au système de configuration du
+noyau.
+
+
+\section{Coder dans le noyau Linux}
+\label{sec:linux_dev}
+
 
 \subsection{Les tables des symboles}
 \paragraph{}

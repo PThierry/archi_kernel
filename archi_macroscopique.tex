@@ -6,7 +6,7 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Mon Sep  6 16:18:47 2010 Philippe THIERRY
-%% Last update Tue Oct  5 16:57:27 2010 Philippe THIERRY
+%% Last update Wed Oct 13 17:41:36 2010 Philippe THIERRY
 %%
 
 \chapter{Architecture macroscopique}
@@ -375,7 +375,7 @@ La plupart du temps, les syscall fournissent une inerface d'échange de données e
 et le noyau, via un buffer. C'est le cas de l'appel système {\tt read}, dont le prototype est le
 suivant :
 \begin{lstlisting}
-int	read(int fd, char *buf, int flags);
+ssize_t	read(int fd, char *buf, size_t count);
 \end{lstlisting}
 
 \paragraph{}
@@ -640,12 +640,4 @@ matériel.
 \subsection{Les pilotes de périphériques}
 \paragraph{}
 
-\section{Coder dans le noyau Linux}
-\label{sec:linux_dev}
-
-\subsection{Configurer et compiler un noyau Linux}
-\paragraph{}
-
-\subsection{Le système de production du noyau}
-\paragraph{}
 
