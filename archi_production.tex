@@ -6,7 +6,7 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Mon Sep  6 16:28:58 2010 Philippe THIERRY
-%% Last update Wed Oct 13 17:21:42 2010 Philippe THIERRY
+%% Last update Wed Nov 17 11:08:58 2010 Philippe THIERRY
 %%
 
 \chapter{Le système de production du noyau}
@@ -199,11 +199,11 @@ répondent à une problématique. C'est souvent le cas des pilotes de carte etherne
 Lorsque le module est composé d'un seul fichier, il suffit alors d'ajouter une seule ligne au
 fichier Makefile:
 \begin{lstlisting}
-obj-$(CONFIG_FOOBAR) := foobar.c
+obj-$(CONFIG_FOOBAR) := foobar.o
 \end{lstlisting}
 A l'inverse, si le module est composé de plusieurs fichiers, on le déclare ainsi:
 \begin{lstlisting}
-obj-$(CONFIG_FOOBAR) := foobar.c
+obj-$(CONFIG_FOOBAR) := foobar.o
 foobar-objs          := foobar_core.o \
                         foobar_extend.o \
                         foobar_debug.o

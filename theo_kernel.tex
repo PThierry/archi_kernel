@@ -6,12 +6,38 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Wed Sep 22 14:45:23 2010 Philippe THIERRY
-%% Last update jeu. 30 sept. 2010 19:32:37 CEST Philippe THIERRY
+%% Last update Wed Nov 17 10:44:43 2010 Philippe THIERRY
 %%
 
 \chapter{Un petit historique du noyau}
 
 \section{L'invention du noyau}
+
+L'invention du noyau vient du fait qu'il devenait nécessaire d'implémenter un couche logicielle
+permettant d'abstraire le matériel sous-jacent. Cela permettait de réduire l'effort de
+développement logiciel.\\
+Très vite, le besoin de faire s'exécuter plusieurs taches est arrivé, avec l'accroissement de la
+puissance des machine. Les premiers ordonnanceurs faisait des traitement non préemptif, de type
+FIFO. Cela permettait de charger un certain nombre de travaux le soir pour en récupérer les
+résultats le lendemain.\\
+Ces besoins étaient liés au fait que la ressource informatique, du fait de sa rareté, était
+précieuse : il était nécessaire de louer la puissance de calcul afin de lancer ses
+taches. Une fois le bail arrivé à son terme, il était parfois nécessaire d'attendre plusieurs jours
+pour avoir de nouveau accès à la machine.\\
+Avec l'accroissement des capacités des ordinateurs sont nés des noyaux plus intelligent, capable de
+fournir des services plus riches aux applicatifs. Ce fut le cas de la création des systèmes de
+fichiers ou des interface d'accès à des périphériques comme les imprimantes. Au fur et à mesure, de
+nouveaux services furent intégrés aux noyaux, comme le support du clavier et de l'écran, arrivés
+plus tard, ou encore des premiers réseaux dans les années 60.\\
+\`{A} la fin des années soixante, une première norme fut créée pour définir une interface unique
+pour les applicatifs, afin de réduire le problème de portabilité à une époque ou aucune norme
+d'interface utilisateur n'existait. Ce fut la norme UNIX 1003.1, qui définit une première version
+d'interface standardisée. Avec cette norme sont nés les premiers noyaux écrit dans un langage
+évolué (n'étant pas de l'assembleur) : le C. Il s'agit de la famille UNIX, dont les premiers
+membres furent Unics (en 1969) et Unix TSS, à partir desquels naquirent BSD, HP-UX ou encore
+SUN-OS, à partir de la fin des années 70. Tous ces noyaux étaient de type monolithiques : ils
+intégraient l'ensemble des services nécessaires pour gérer l'intégralité du matériel et des
+services requis pour permettre aux taches de fonctionner correctement.
 
 \section{Les noyaux monolithiques}
 
@@ -60,9 +86,6 @@ cette zone de service ne provoque pas de plantage du noyau, du fait de cette sép
 Il existe aujourd'hui des éléments d'architectures de type exo-noyaux. Il s'agit de noyau plus
 petits encore que les micro-noyaux décrits au dessus. Le but est de fournir uniquement une couche
 d'abstraction du matériel sans fournir d'éléments avancés tels qu'un ordonnanceur au niveau noyau.
-
-\paragraph{}
-Les exo-noyaux sont destinés à des architectures logicielles peu fréquentes (\FIXME continuer)
 
 \subsection{Les hyperviseurs}
 

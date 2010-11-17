@@ -6,7 +6,7 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Mon Sep  6 16:18:47 2010 Philippe THIERRY
-%% Last update Wed Oct 13 18:03:07 2010 Philippe THIERRY
+%% Last update Wed Nov 17 11:51:08 2010 Philippe THIERRY
 %%
 
 \chapter{Architecture macroscopique}
@@ -429,7 +429,7 @@ Il existe d'autre moyens de communiquer entre processus, comme par exemple au tr
 \index{socket}socket
 UNIX, mais il ne s'agit pas, dans ce cas, d'une \index{IPC}IPC.
 
-\subsection{L'ordonnanceur est la gestion des taches}
+\subsection{L'ordonnanceur et la gestion des taches}
 
 \paragraph{}
 Un noyau doit impérativement gérer des taches, faute de quoi sont intérêt serait fortement réduit.
@@ -632,19 +632,62 @@ qu'un évènement a eu lieu, et appelle le driver associé. {\it Khubd} est en atte
 travers d'un mécanisme de polling, dont la période est une propriété fournie par le controlleur USB
 matériel.
 
-\FIXME: continuer, mettre un peu au propre ces qques paragraphes
+\paragraph{}
+L'implémentation de la pile USB commence à se stabiliser ces deux dernières années. Elle reste
+cependant très dynamique, du fait de l'arrivée de la norme USB 3 et de la constante intégration de
+nouveaux périphériques USB.
 
 \subsection{La sécurité et la cryptographie}
 \paragraph{}
-SELinux, SMAC et Tomoyo\\
-Le support des TPM\\
-Introduction à GRSecurity
+Le noyau Linux fournit un certain nombre de service de base, comme le support des droits POSIX
+(support des utilisateurs et des groupes, sur une valeur octale allant de 000 à 777),
+avec une politique de sécurité de type DAC\footnote{Discretionary Access Control} et le support des
+{\it capabilities} POSIX.\\
+Les capabilities définissent des classes de privilèges avec le support de l'héritage des privilèges
+lors de la création d'un processus fils).\\
+\`{A} cela est ajouté le support des droits étendus (flags setuid, setgid, etc).
 
 \paragraph{}
-La cryptographie : les algos crypto et la glue associée
+La gestion des droits telle que définie ci-dessus est toujours présente dans un noyau Linux, quel
+que soit sa configuration (hors capabilities, qui peut être désactivé). Cependant, il existe
+plusieurs modules complémentaires permettant d'intégrer des fonctions de sécurité supplémentaires.
+Il s'agit des éléments suivants :\\
+\begin{itemize}
+\item {\bf SELinux}: introduit par la NSA, ce module fournit un support du mode
+RBAC\footnote{Role-Based Access Control} permettant de définir des rôles et des droits pour chacun
+deux. Contrairement au DAC, ce n'est plus l'utilisateur qui définit ses droits (et ceux de ses
+fichiers) mais la politique de sécurité associé au modèle RBAC.
+\item {\bf SMAC}: Il s'agit d'un module intégré récement, dont le but et de supporter un modèle de
+sécurité de type MAC\footnote{Mandatory Access Control} simplifié. Il s'agit de définir de manière
+statique des droit pour les différents utilisateurs en terme de visibilité sur le système et sur
+les accès qu'il a le droit de faire. Il s'agit d'un modèle plus simple à gérer que le RBAC, mais
+moins précis.
+\item {\bf AppArmor}: Module intégré dans le noyau Linux par Canonical (distribution Ubuntu) qui
+s'en sert dans sa distibution. Il fournit le support d'un modèle RBAC avec support de
+l'apprentissage, proche de SELinux.
+\item {\bf les TPM}: Support des Trusted Plateform Modules. Pemet de prendre en compte certains
+éléments matériel de sécurisation.
+\end{itemize}
+
+\paragraph{}
+Linux implémente un certain nombre d'algorithme de chiffrement et de hachage, comme le SHA1, l'AES
+ou encore le DES. Ces différents algorithmes sont employés au niveau du noyau pour la
+gestion de l'IPSEC ou des systèmes de fichiers chiffrés par exemple. Ils sont également accessible
+aux applicatifs au travers de l'API du noyau.
 
 \subsection{Les pilotes de périphériques}
 \paragraph{}
-Les classes de périphériques\\
-Les différents types de pilotes. Introduction au LDD\\
-Udev et la configuration des fichiers devices
+Comme vu dans le cas de l'USB, Linux implémente un grand nombre de pilote de périphérique. Ces
+derniers sont classifiés en fonction de leur famille (net devices, usb, char devices, block
+devices...). \`{A} chaque famille est associée une liste de pilotes dans laquelle Linux va piocher
+lors de la découverte des périphériques.\\
+Un pilote de périphérique fournit l'interface entre le noyau et le matériel qu'il gère. Il doit
+donc s'enregistrer auprès du noyau pour lui preciser quel matériel il supporte, et comment le noyau
+doit se servir de lui. Chaque famille possède une interface standardisée qui permet au pilote
+d'enregistrer les différentes fonctions de son API auprès du noyau.\\
+Pour définir les périphériques qu'un pilote supporte, le noyau s'appuie sur un système normalisé de
+couple constructeur/modèle. Il s'agit de deux valeur numérique que chaque périphérique est capable
+de donner de manière générique. Lorsqu'un pilote donne au noyau la liste des périphérique qu'il
+supporte, il fournit la liste des couples constructeur/modèle qu'il sait gérer. Ce couple est bien
+sur unique pour un modèle donné. Pour pouvoir posséder un numéro de constructeur, la société doit
+s'enregistrer auprès d'instances internationales.
