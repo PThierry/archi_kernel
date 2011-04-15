@@ -6,28 +6,90 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Fri Oct  1 13:35:49 2010 Philippe THIERRY
-%% Last update Fri Oct  1 14:34:06 2010 Philippe THIERRY
+%% Last update ven. 15 avril 2011 15:33:52 CEST Philippe THIERRY
 %%
 
 \begin{pdfpic}
-\scalebox{1}{
-\begin{pspicture}(0,0)(15,10)
+\scalebox{0.75}{
+\begin{pspicture}(-1,-1)(20,8)
 \definecolor{NF}{rgb}{0.7,1,1}
-\psTilt{60}{%
-\psframe[linewidth=0.04cm,fillstyle=solid,fillcolor=NF](1,1)(2,9)
-\rput{90}(1.5,3){\text Netfilter}
-}
-% first step (link)
-\psframe[linewidth=0.04cm](5,1)(11,3)
-\psline[linewidth=0.04cm](5,3)(6.5,4)
-\psline[linewidth=0.04cm](11,3)(12.5,4)
-% second step (network)
-\psframe[linewidth=0.04cm](6.5,4)(12.5,6)
-\psline[linewidth=0.04cm](6.5,6)(8,7)
-\psline[linewidth=0.04cm](12.5,6)(14,7)
-% third step (transport)
-\psframe[linewidth=0.04cm](8,7)(14,9)
-\rput(7,0){\text \FIXME refaire en 2D}
+% incoming NIC
+\psframe[linewidth=0.04cm](0,0)(1,0.7)
+\psframe[linewidth=0.03cm](0.2,0.2)(0.6,0.5)
+\psline[linewidth=0.06cm](1,0)(1,1)(1.1,1)
+\rput[rt](0.5,-0.2){\text NIC}
+% ISR and poller
+\psframe[linewidth=0.04cm](2,2)(3,2.5)
+\rput(2.5,2.25){\text ISR}
+\psframe[linewidth=0.04cm](2,3.5)(3,4)
+\rput(2.5,3.75){\text Poller}
+% link from NIC to ISR & poller
+\psline[linewidth=0.04cm]{->}(0.5,0.7)(2,2.25)
+\psline[linewidth=0.04cm]{->}(0.5,0.7)(2,3.75)
+% first temporal break
+\psline[linewidth=0.04cm]{->}(3,2.25)(4,2.25)
+\psline[linewidth=0.04cm]{->}(3,3.75)(4,3.75)
+\psline[linewidth=0.04cm](4,1.5)(4,4.5)
+\rput(4.25,3){\rotatebox{90}{\text first temporal break}}
+\psline[linewidth=0.04cm](4.5,1.5)(4.5,4.5)
+% L2 first pass
+\psframe[linewidth=0.04cm](4.5,2)(6.5,3)
+\rput(5.5,2.6){\text L2}
+\rput(5.5,2.3){\text prerouting}
+% In
+\psline[linewidth=0.04cm](9,6)(8,6)(8,7)(9,7)
+% ip prerouting
+\psframe[linewidth=0.04cm](7.5,4)(9.5,5)
+\rput(8.5,4.6){\text IP}
+\rput(8.5,4.3){\text Prerouting}
+% ip forwarder
+\psframe[linewidth=0.04cm](10,4)(12,5)
+\rput(11,4.6){\text IP}
+\rput(11,4.3){\text Forwarder}
+% briding
+\psframe[linewidth=0.04cm](7.5,2)(14.5,3)
+\rput(11,2.5){\text Bridging}
+% links from L2 first pass
+\psline[linewidth=0.04cm]{->}(6.5,2.5)(7.5,2.5)
+\psline[linewidth=0.04cm]{->}(6.5,3)(7.5,4.5)
+\psline[linewidth=0.04cm]{->}(9.5,4.5)(10,4.5)
+\psline[linewidth=0.04cm]{->}(8.5,5)(8.5,6)
+% out
+\psline[linewidth=0.04cm](13,6)(14,6)(14,7)(13,7)
+\psline[linewidth=0.04cm]{->}(13.5,6)(13.5,5)
+% ip postrouting
+\psframe[linewidth=0.04cm](12.5,4)(14.5,5)
+\rput(13.5,4.6){\text IP}
+\rput(13.5,4.3){\text postrouting}
+\psline[linewidth=0.04cm]{->}(12,4.5)(12.5,4.5)
+% br postrouting
+\psframe[linewidth=0.04cm](15.5,2)(17.5,3)
+\rput(16.5,2.6){\text L2}
+\rput(16.5,2.3){\text postrouting}
+\psline[linewidth=0.04cm]{->}(14.5,4)(16.5,3)
+% second temporal break
+\psline[linewidth=0.04cm](17.5,1.5)(17.5,4.5)
+\rput(17.75,3){\rotatebox{90}{\text second temporal break}}
+\psline[linewidth=0.04cm](18,1.5)(18,4.5)
+% output queue 1
+\psframe[linewidth=0.04cm](18.3,2)(18.7,3)
+\psline[linewidth=0.04cm](18.3,2.2)(18.7,2.2)
+\psline[linewidth=0.04cm](18.3,2.4)(18.7,2.4)
+\psline[linewidth=0.04cm](18.3,2.6)(18.7,2.6)
+\psline[linewidth=0.04cm](18.3,2.8)(18.7,2.8)
+% output queue 2
+\psframe[linewidth=0.04cm](18.9,2)(19.3,2.8)
+\psline[linewidth=0.04cm](18.9,2.2)(19.3,2.2)
+\psline[linewidth=0.04cm](18.9,2.4)(19.3,2.4)
+\psline[linewidth=0.04cm](18.9,2.6)(19.3,2.6)
+% output NIC
+\psframe[linewidth=0.04cm](18.3,0)(19.3,0.7)
+\psframe[linewidth=0.03cm](18.5,0.2)(18.9,0.5)
+\psline[linewidth=0.06cm](19.3,0)(19.3,1)(19.4,1)
+\rput(18.8,-0.2){\text NIC}
+% Let's mark the NF hooks now
+\psline[linewidth=0.06cm,linecolor=red]{<-}(5.5,2)(5.5,0)
+\rput(5.5,-0.3){\text {\color{red}{NF\_BR\_PREROUTING}}}
 \end{pspicture}
 }
 \end{pdfpic}
