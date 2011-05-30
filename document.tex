@@ -6,7 +6,7 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Mon Sep  6 16:14:09 2010 Philippe THIERRY
-%% Last update Wed Oct 13 17:24:03 2010 Philippe THIERRY
+%% Last update lun. 30 mai 2011 11:55:53 CEST Philippe THIERRY
 %%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,6 +127,7 @@
 %% Code insertion support, using listing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\definecolor{lstbg}{rgb}{0.9,0.9,0.9}			%
 % add code support
 \definecolor{colKeys}{rgb}{0,0,1}			%
 \definecolor{colIdentifier}{rgb}{0,0,0}			% Support for code coloration
@@ -134,6 +135,7 @@
 \definecolor{colString}{rgb}{0.6,0.1,0.1}		%
 
 \lstset{%						% configuration of listings 
+ language=bash,%
  float=hbp,% 						%
  basicstyle=\ttfamily\small, % 				% For code integration
  identifierstyle=\color{colIdentifier}, % 		% Use the above codekeys
@@ -142,8 +144,9 @@
  commentstyle=\color{colComments}, % 			%
  columns=flexible, % 					%
  tabsize=2, % 						%
- frame=trBL, % 						%
- frameround=tttt, % 					%
+ frame=single, % 						%
+ backgroundcolor=\color{lstbg},%
+ %frameround=tttt, % 					%
  extendedchars=true, % 					%
  showspaces=false, % 					%
  showstringspaces=false, % 				%
@@ -153,7 +156,8 @@
  breakautoindent=true, % 				%
  captionpos=b,% 					%
  xrightmargin=0.5cm, % 					%
-     xleftmargin=0.5cm 					%
+ xleftmargin=0.5cm,% 					%
+ morekeywords={\$\([a-zA-Z0-9\_]+\)}
     } 							%
 
 \lstloadlanguages{make,C}

@@ -6,7 +6,7 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Wed Sep 22 14:45:23 2010 Philippe THIERRY
-%% Last update Wed Nov 17 10:44:43 2010 Philippe THIERRY
+%% Last update lun. 30 mai 2011 12:44:53 CEST Philippe THIERRY
 %%
 
 \chapter{Un petit historique du noyau}
@@ -62,7 +62,7 @@ Exemple de GNU Hurd, noyau hybride écrit en C++, déportant une partie de ses mod
 domaine d'exécution dit de {\it service}, hors de l'espace d'adressage du noyau. Un plantage dans
 cette zone de service ne provoque pas de plantage du noyau, du fait de cette séparation.
 
-\begin{figure}[ht]
+\begin{figure}[h!]
 \input{pictures/kernel_hybrid.tex}
 \label{pic:kern_hybrid}
 \caption{Répartition des services dans un noyau hybride}
@@ -70,6 +70,22 @@ cette zone de service ne provoque pas de plantage du noyau, du fait de cette sép
 
 
 \section{Les micro-noyaux}
+
+\paragraph{}
+Les micro-noyaux ont pour but de réduire le plus possible le code s'exécutant avec les droits
+d'administrateurs sur la machine. Ils ont de bonnes propriétés de sécurité, principalement du fait
+de leur faible complexité. De plus, il génèrent un faible overhead car ne fournissant pas de
+service à forte valeur ajoutée (comme une pile réseau) pouvant impacter la durée d'exécution des
+taches qu'ils ordonnancent.
+
+\paragraph{}
+Il faut cependant bien prendre en compte que l'ensemble des éléments à valeurs ajoutée (les
+services dans les noyau hybrides) doivent être implémenter comme des éléments applicatifs
+(bibliothèques et taches). On a par contre une meilleure maîtrise de leur ordonnancement.
+
+\paragraph{}
+La plupart des noyaux professionnels pour les besoins Temps Réel et de Sécurité sont des
+micro-noyaux : Vxworks, velOSity, Integrity ou encore PikeOS.
 
 \begin{figure}[ht]
 \input{pictures/kernel_micro.tex}
@@ -113,7 +129,7 @@ ou ARM TrustZone).
 \begin{figure}[ht]
 \input{pictures/kernel_hypervisor.tex}
 \label{pic:kern_micro}
-\caption{Les architectures logiciels des hyperviseurs}
+\caption{Les architectures logicielles des hyperviseurs}
 \end{figure}
 
 \paragraph{}
@@ -123,15 +139,21 @@ d'étudier le principe des système MILS
 (\url{http://en.wikipedia.org/wiki/Multiple\_Independent\_Levels\_of\_Security}) en comparaison aux
 solutions existantes de RTOS (Real-Time Operating Systems)}.
 
-\chapter{Les noyaux UNIX}
+\chapter{Petit état de l'art des noyaux d'ajourd'hui}
 
-\section{Introduction}
+\section{Les noyaux UNIX et dérivés}
+
+\paragraph{}
+Cette famille de noyau correspond principalement à des noyaux écrit en C (à l'exception notable de
+Hurd) et respectant plus ou moins complètement la norme POSIX.\\
+Le langage C a été écrit par deux informaticiens américain : Brian Kernighan et Dennis Ritchie. Ils
+sont également co-auteurs (avec d'autres) du premier UNIX, qui fut écrit principalement en C.
 Afin de fournir aux applicatifs une interface normalisée leur permettant de s'abstraire des spécificités
 du matériel mais également des différents noyaux existant, une norme fut créée au début des années 70 :
 la norme POSIX.\\
 Le but est que l'ensemble des noyaux existant soit compatible de cette norme, ceci afin de rendre
-les applicatifs portable d'un noyau à un autre. Ce fut le cas de tous les noyaux monolithiques (hors
-recherche)... jusqu'à l'arrivée de MS-DOS).
+les applicatifs portable d'un noyau à un autre. Ce fut le cas de la plupart des noyaux monolithiques - hors
+recherche - jusqu'à l'arrivée de MS-DOS.
 
 \paragraph{}
 Arbre généalogique de la famille UNIX
@@ -141,9 +163,6 @@ Arbre généalogique de la famille UNIX
 \label{fig:unix_genealogy}
 \end{figure}
 
-\section{Le langage C et la création d'UNIX}
-
-\section{POSIX et la portabilité}
 
 \section{La (grande) famille BSD}
 

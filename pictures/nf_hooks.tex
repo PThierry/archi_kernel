@@ -6,7 +6,7 @@
 %% Login   <Philippe THIERRYreseau-libre.net>
 %%
 %% Started on  Fri Oct  1 13:35:49 2010 Philippe THIERRY
-%% Last update ven. 15 avril 2011 15:33:52 CEST Philippe THIERRY
+%% Last update lun. 30 mai 2011 11:45:48 CEST Philippe THIERRY
 %%
 
 \begin{pdfpic}
@@ -38,6 +38,7 @@
 \rput(5.5,2.3){\text prerouting}
 % In
 \psline[linewidth=0.04cm](9,6)(8,6)(8,7)(9,7)
+\rput(8.5,6.5){\text In}
 % ip prerouting
 \psframe[linewidth=0.04cm](7.5,4)(9.5,5)
 \rput(8.5,4.6){\text IP}
@@ -56,6 +57,7 @@
 \psline[linewidth=0.04cm]{->}(8.5,5)(8.5,6)
 % out
 \psline[linewidth=0.04cm](13,6)(14,6)(14,7)(13,7)
+\rput(13.5,6.5){\text Out}
 \psline[linewidth=0.04cm]{->}(13.5,6)(13.5,5)
 % ip postrouting
 \psframe[linewidth=0.04cm](12.5,4)(14.5,5)
@@ -89,7 +91,19 @@
 \rput(18.8,-0.2){\text NIC}
 % Let's mark the NF hooks now
 \psline[linewidth=0.06cm,linecolor=red]{<-}(5.5,2)(5.5,0)
-\rput(5.5,-0.3){\text {\color{red}{NF\_BR\_PREROUTING}}}
+\rput[t](5.2,1.7){\text {\rotatebox{90}{\color{red}{NF\_BR\_PREROUTING}}}}
+\psline[linewidth=0.06cm,linecolor=red]{<-}(8.5,4)(8.5,0)
+\rput[t](8.2,1.7){\text {\rotatebox{90}{\color{red}{NF\_IP\_PREROUTING}}}}
+\psline[linewidth=0.06cm,linecolor=red]{<-}(11,4)(11,0)
+\rput[t](10.7,1.7){\text {\rotatebox{90}{\color{red}{NF\_IP\_FORWARD}}}}
+\psline[linewidth=0.06cm,linecolor=red]{<-}(13.5,4)(13.5,0)
+\rput[t](13.2,1.7){\text {\rotatebox{90}{\color{red}{NF\_IP\_POSTROUTING}}}}
+\psline[linewidth=0.06cm,linecolor=red]{<-}(16.5,2)(16.5,0)
+\rput[t](16.2,1.7){\text {\rotatebox{90}{\color{red}{NF\_BR\_POSTROUTING}}}}
+\psline[linewidth=0.06cm,linecolor=red]{<-}(8,6.5)(7,6)(7,0)
+\rput[t](6.7,1.7){\text {\rotatebox{90}{\color{red}{NF\_IP\_IN}}}}
+\psline[linewidth=0.06cm,linecolor=red]{<-}(14,6.5)(15,6)(15,0)
+\rput[t](14.7,1.7){\text {\rotatebox{90}{\color{red}{NF\_IP\_OUT}}}}
 \end{pspicture}
 }
 \end{pdfpic}
